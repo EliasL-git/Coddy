@@ -52,7 +52,7 @@ export default function LessonPage() {
     const ok = userNorm.includes(expectedNorm) || expectedNorm.includes(userNorm);
 
     if (ok) {
-      setFeedback({ type: 'success', message: 'Great job! That's correct. 🎉' });
+      setFeedback({ type: 'success', message: "Great job! That's correct. 🎉" });
     } else {
       setFeedback({ type: 'error', message: 'Not quite. Check your syntax and try again.' });
     }
