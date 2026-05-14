@@ -12,18 +12,6 @@
       "Setting font sizes and styles",
       "Controlling spacing (margin and padding)",
       "Creating layouts with Flexbox"
-    ],
-    "examples": [
-      {
-        "title": "Coloring Text",
-        "code": "h1 {\n  color: blue;\n}",
-        "explanation": "This selects all <h1> elements and turns them blue."
-      },
-      {
-        "title": "Adding Spacing",
-        "code": "p {\n  padding: 20px;\n  background-color: #f0f0f0;\n}",
-        "explanation": "This adds space inside paragraphs and sets a light gray background."
-      }
     ]
   },
   "lessons": [
@@ -41,14 +29,29 @@
           "type": "code",
           "title": "Set the body font and background",
           "description": "Great portfolios start with clean, readable typography.",
-          "instructions": "Add a body rule that sets font-family to sans-serif, background-color to #f0f4f8, and color to #333.",
-          "starterCode": "/* Style your portfolio! */\n",
-          "expectedOutput": "body",
-          "checks": ["body", "font-family", "background-color"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
-          "hints": [
-            "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}"
+          "learn": [
+            {
+              "heading": "What is CSS?",
+              "paragraphs": [
+                "CSS controls how HTML elements look. You write selectors (like `body` or `h1`) and declare style rules.",
+                "The `body` selector targets the whole page — setting fonts and background here affects everything unless overridden."
+              ],
+              "snippet": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}"
+            },
+            {
+              "heading": "Further Reading",
+              "paragraphs": ["Read the MDN CSS reference for `font-family` and `background-color` to learn more."],
+              "textbook": {"title": "MDN CSS reference", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS", "excerpt": "MDN provides authoritative docs and examples for CSS properties."}
+            }
           ],
+          "questions": [
+            {"id": "q1", "prompt": "Which CSS selector would you use to set a page-wide font and background?", "expectedKeywords": ["body"]},
+            {"id": "q_mcq_1", "type": "mcq", "prompt": "Which property sets the background color of the page?", "options": ["font-family", "background-color", "margin"], "correctIndex": 1}
+          ],
+          "starterCode": "/* Style your portfolio! */\n",
+          "checks": ["body", "font-family", "background-color"],
+          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1><!-- Your name here --> </h1>\n<p><!-- Short bio about you --> </p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p><!-- A short paragraph about you --> </p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3><!-- Project title --> </h3><a href=\"#\">View project</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
+          "hints": ["body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}"],
           "xpReward": 10
         },
         {
@@ -56,11 +59,17 @@
           "type": "code",
           "title": "Style the main heading",
           "description": "Make the portfolio owner's name stand out with a bold, dark color.",
+          "learn": [
+            {"heading": "Headings and size", "paragraphs": ["Heading styles come from selectors like `h1`. Use `font-size` and `color` to control appearance."], "snippet": "h1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}"}
+          ],
+          "questions": [
+            {"id": "q1", "prompt": "What property sets the size of text in CSS?", "expectedKeywords": ["font-size"]},
+            {"id": "q_mcq_2", "type": "mcq", "prompt": "Which unit is commonly used for responsive font sizing?", "options": ["px", "rem", "cm"], "correctIndex": 1}
+          ],
           "instructions": "Add an h1 rule that sets color to #2c3e50 and font-size to 2rem.",
           "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}\n",
-          "expectedOutput": "h1",
           "checks": ["h1", "color", "font-size"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
+          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1><!-- Your name here --> </h1>\n<p><!-- Short bio about you --> </p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p><!-- A short paragraph about you --> </p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3><!-- Project title --> </h3><a href=\"#\">View project</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
           "hints": ["h1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}"],
           "xpReward": 10
         },
@@ -69,14 +78,18 @@
           "type": "code",
           "title": "Style the navigation links",
           "description": "Remove the default blue underlined links and give your nav a fresh look.",
+          "learn": [
+            {"heading": "Styling links", "paragraphs": ["Links use the `a` selector. `text-decoration: none` removes underlines; color changes the link colour."], "snippet": "nav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}"}
+          ],
+          "questions": [
+            {"id": "q1", "prompt": "Which property removes the underline from links?", "expectedKeywords": ["text-decoration"]},
+            {"id": "q_mcq_3", "type": "mcq", "prompt": "Which selector targets links inside a nav element?", "options": ["nav", "nav a", "a nav"], "correctIndex": 1}
+          ],
           "instructions": "Add a nav a rule: set color to #3498db, text-decoration to none, and margin-right to 12px.",
           "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n",
-          "expectedOutput": "nav a",
           "checks": ["nav a", "text-decoration", "color"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
-          "hints": [
-            "nav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}"
-          ],
+          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1><!-- Your name here --> </h1>\n<p><!-- Short bio about you --> </p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p><!-- A short paragraph about you --> </p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3><!-- Project title --> </h3><a href=\"#\">View project</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
+          "hints": ["nav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}"],
           "xpReward": 10
         }
       ]
@@ -98,9 +111,7 @@
           "description": "Sections feel cramped without spacing — padding fixes that.",
           "instructions": "Add a section rule with padding: 24px and margin-bottom: 20px to give each section breathing room.",
           "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n",
-          "expectedOutput": "section",
           "checks": ["section", "padding", "margin-bottom"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
           "hints": ["section {\n  padding: 24px;\n  margin-bottom: 20px;\n}"],
           "xpReward": 12
         },
@@ -110,13 +121,9 @@
           "title": "Style the project card",
           "description": "A border and rounded corners turn a plain div into a polished card.",
           "instructions": "Add a .card rule with: border: 1px solid #ddd, border-radius: 8px, padding: 16px, and background-color: #fff.",
-          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n\nsection {\n  padding: 24px;\n  margin-bottom: 20px;\n}\n",
-          "expectedOutput": ".card",
+          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n}\n",
           "checks": [".card", "border-radius", "padding"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
-          "hints": [
-            ".card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}"
-          ],
+          "hints": [".card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}"],
           "xpReward": 12
         },
         {
@@ -125,13 +132,9 @@
           "title": "Center the page content",
           "description": "A max-width with auto margins keeps your page readable on wide screens.",
           "instructions": "Update the body rule: add max-width: 800px, margin: 0 auto, and padding: 20px to center and frame the content.",
-          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  /* Add max-width, margin: 0 auto, and padding here */\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n\nsection {\n  padding: 24px;\n  margin-bottom: 20px;\n}\n\n.card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}\n",
-          "expectedOutput": "max-width",
+          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  /* Add max-width, margin: 0 auto, and padding here */\n}\n",
           "checks": ["max-width", "margin: 0 auto", "padding"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
-          "hints": [
-            "Add inside the body rule:\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;"
-          ],
+          "hints": ["Add inside the body rule:\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px"],
           "xpReward": 12
         }
       ]
@@ -152,10 +155,8 @@
           "title": "Flex the navigation",
           "description": "Flexbox arranges nav links into a clean horizontal row effortlessly.",
           "instructions": "Add a nav rule with display: flex and gap: 12px to lay your links out in a row with even spacing.",
-          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n\nsection {\n  padding: 24px;\n  margin-bottom: 20px;\n}\n\n.card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}\n",
-          "expectedOutput": "display: flex",
+          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n",
           "checks": ["nav", "display: flex", "gap"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
           "hints": ["nav {\n  display: flex;\n  gap: 12px;\n}"],
           "xpReward": 14
         },
@@ -165,13 +166,9 @@
           "title": "Flex the project cards",
           "description": "Use flexbox on the projects section so multiple cards sit side by side.",
           "instructions": "Add an #projects rule with display: flex, flex-wrap: wrap, and gap: 16px so cards flow into a responsive grid.",
-          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n\nsection {\n  padding: 24px;\n  margin-bottom: 20px;\n}\n\n.card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}\n\nnav {\n  display: flex;\n  gap: 12px;\n}\n",
-          "expectedOutput": "#projects",
+          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n",
           "checks": ["#projects", "display: flex", "flex-wrap"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
-          "hints": [
-            "#projects {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}"
-          ],
+          "hints": ["#projects {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}"],
           "xpReward": 14
         },
         {
@@ -180,10 +177,8 @@
           "title": "Make cards grow evenly",
           "description": "The flex shorthand lets each card claim its fair share of the available space.",
           "instructions": "Add a new .card rule with flex: 1 and min-width: 200px so cards expand evenly and wrap gracefully on narrow screens.",
-          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n\nh1 {\n  color: #2c3e50;\n  font-size: 2rem;\n}\n\nnav a {\n  color: #3498db;\n  text-decoration: none;\n  margin-right: 12px;\n}\n\nsection {\n  padding: 24px;\n  margin-bottom: 20px;\n}\n\n.card {\n  border: 1px solid #ddd;\n  border-radius: 8px;\n  padding: 16px;\n  background-color: #fff;\n}\n\nnav {\n  display: flex;\n  gap: 12px;\n}\n\n#projects {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n",
-          "expectedOutput": "flex: 1",
+          "starterCode": "body {\n  font-family: sans-serif;\n  background-color: #f0f4f8;\n  color: #333;\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n}\n",
           "checks": [".card", "flex", "min-width"],
-          "baseHtml": "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\" style=\"border-radius:50%;display:block;margin:0 auto\">\n<h1>Jane Smith</h1>\n<p>I am a developer learning to build websites.</p>\n<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a> <a href=\"#contact\">Contact</a></nav>\n<section id=\"about\"><h2>About Me</h2><p>I love coding and building things on the web!</p></section>\n<section id=\"projects\"><h2>Projects</h2><div class=\"card\"><h3>My First Website</h3><a href=\"#\">View on GitHub</a></div></section>\n<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>",
           "hints": [".card {\n  flex: 1;\n  min-width: 200px;\n}"],
           "xpReward": 14
         }

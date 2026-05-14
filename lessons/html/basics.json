@@ -68,6 +68,17 @@
               "snippet": "<!DOCTYPE html>"
             },
             {
+              "heading": "Further Reading",
+              "paragraphs": [
+                "If you'd like a deeper reference, read the short textbook excerpt below before starting to code."
+              ],
+              "textbook": {
+                "title": "HTML5 Quick Reference",
+                "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element",
+                "excerpt": "MDN's HTML reference is a concise, authoritative guide to HTML elements and attributes."
+              }
+            },
+            {
               "heading": "Head and Body",
               "paragraphs": [
                 "After `<!DOCTYPE html>`, you wrap everything in an `<html>` element. Inside `<html>` there are exactly two children:",
@@ -83,6 +94,20 @@
           "checks": ["<!doctype html>", "<html", "<head>", "<body>", "<title>"],
           "hints": [
             "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n\n  </body>\n</html>"
+          ],
+          "questions": [
+            {
+              "id": "q1",
+              "prompt": "What declaration must appear as the first line of an HTML5 document? Type the declaration (e.g. <!DOCTYPE html>).",
+              "expectedKeywords": ["!doctype"]
+            },
+            {
+              "id": "q_mcq_1",
+              "type": "mcq",
+              "prompt": "Which tag contains the visible content of the page?",
+              "options": ["<head>", "<body>", "<meta>"],
+              "correctIndex": 1
+            }
           ],
           "xpReward": 10
         },
@@ -113,7 +138,7 @@
           "instructions": "Inside the `<body>` tag, add an `<h1>` element containing your name.",
           "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your <h1> heading here -->\n\n  </body>\n</html>\n",
           "checks": ["<h1>"],
-          "hints": ["<h1>Jane Smith</h1>"],
+          "hints": ["<h1><!-- Your name here --></h1>"],
           "xpReward": 10
         },
         {
@@ -140,7 +165,7 @@
             }
           ],
           "instructions": "Below the `<h1>`, add a `<p>` tag with one or two sentences introducing yourself.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <!-- Add your <p> paragraph below -->\n\n  </body>\n</html>\n",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1><!-- Add your name here --> </h1>\n    <!-- Add your <p> paragraph below -->\n\n  </body>\n</html>\n",
           "checks": ["<p>"],
           "hints": ["<p>I am a developer learning to build websites.</p>"],
           "xpReward": 10
@@ -190,7 +215,7 @@
             }
           ],
           "instructions": "Add a `<nav>` element inside `<body>`. Inside it, add two `<a>` links: one pointing to `#about` with text 'About', and one pointing to `#projects` with text 'Projects'.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <!-- Add your <nav> here -->\n\n  </body>\n</html>\n",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1><!-- Add your name here --> </h1>\n    <p><!-- Short bio about you (one or two sentences) --> </p>\n    <!-- Add your <nav> here -->\n\n  </body>\n</html>\n",
           "checks": ["<nav>", "<a href"],
           "hints": [
             "<nav>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n</nav>"
@@ -222,7 +247,7 @@
             }
           ],
           "instructions": "Add a `<section id=\"about\">` after the `<nav>`. Inside it, put an `<h2>` with text 'About Me' and a `<p>` describing your interests or skills.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <!-- Add your About section here -->\n\n  </body>\n</html>\n",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1><!-- Add your name here --> </h1>\n    <p><!-- Short bio about you (one or two sentences) --> </p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <!-- Add your About section here -->\n\n  </body>\n</html>\n",
           "checks": ["<section", "id=", "about", "<h2>"],
           "hints": [
             "<section id=\"about\">\n  <h2>About Me</h2>\n  <p>I love coding and building things!</p>\n</section>"
@@ -253,7 +278,7 @@
             }
           ],
           "instructions": "Add a `<section id=\"projects\">` after the About section. Inside it, add an `<h2>` with text 'Projects', then a `<div>` containing an `<h3>` with a project name of your choice.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <!-- Add your Projects section here -->\n\n  </body>\n</html>\n",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1><!-- Add your name here --> </h1>\n    <p><!-- Short bio about you --> </p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p><!-- A short paragraph about you --> </p>\n    </section>\n    <!-- Add your Projects section here -->\n\n  </body>\n</html>\n",
           "checks": ["<section", "projects", "<h2>", "<h3>"],
           "hints": [
             "<section id=\"projects\">\n  <h2>Projects</h2>\n  <div>\n    <h3>My Portfolio Site</h3>\n  </div>\n</section>"
