@@ -1,0 +1,17 @@
+{
+  "name": "coddy",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm i --prefix backend && npm i --prefix frontend",
+    "dev": "concurrently -n backend,frontend -c green,blue \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "start": "npm run start --prefix backend",
+    "validate": "node backend/seed.js",
+    "promote": "node backend/promote.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

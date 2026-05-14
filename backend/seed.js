@@ -1,18 +1,20 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const Lesson = require('./models/Lesson');
-const { loadLessons } = require('./services/courseLoader');
+// Validates all JSON files in the lessons/ folder and prints a summary.
+// Run with: npm run validate
+const { loadLessons, loadCourses } = require("./services/courseLoader");
 
-async function seed() {
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/coddy');
-  await Lesson.deleteMany({});
+try {
+  const courses = loadCourses();
   const lessons = loadLessons();
-  await Lesson.insertMany(lessons);
-  console.log(`Seeded ${lessons.length} lessons!`);
-  process.exit();
-}
 
-seed().catch(err => {
-  console.error(err);
+  console.log(`✓ ${courses.length} course(s) loaded:`);
+  for (const course of courses) {
+    const count = lessons.filter((l) => l.courseId === course.id).length;
+    console.log(
+      `   ${course.icon || "📚"}  ${course.name} — ${count} lesson(s)`,
+    );
+  }
+  console.log(`\n✓ ${lessons.length} total lesson(s) — all valid.`);
+} catch (err) {
+  console.error("✗", err.message);
   process.exit(1);
-});
+}

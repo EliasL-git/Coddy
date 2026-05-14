@@ -1,13 +1,42 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { api } from '../api/client';
-import { Code2, FileCode2, Braces, Flame, Star, Zap, Trophy } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { api } from "../api/client";
+import {
+  Code2,
+  FileCode2,
+  Braces,
+  Flame,
+  Star,
+  Zap,
+  Trophy,
+} from "lucide-react";
 
 const languages = [
-  { key: 'html', name: 'HTML', color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-200', icon: FileCode2 },
-  { key: 'css', name: 'CSS', color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-200', icon: Code2 },
-  { key: 'javascript', name: 'JavaScript', color: 'text-yellow-500', bg: 'bg-yellow-50', border: 'border-yellow-200', icon: Braces },
+  {
+    key: "html",
+    name: "HTML",
+    color: "text-orange-500",
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+    icon: FileCode2,
+  },
+  {
+    key: "css",
+    name: "CSS",
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    icon: Code2,
+  },
+  {
+    key: "javascript",
+    name: "JavaScript",
+    color: "text-yellow-500",
+    bg: "bg-yellow-50",
+    border: "border-yellow-200",
+    icon: Braces,
+  },
 ];
 
 export default function Dashboard() {
@@ -47,7 +76,9 @@ export default function Dashboard() {
       <div className="bg-surface rounded-2xl border border-border p-6 mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold">Welcome back, {user?.username}! 👋</h1>
+            <h1 className="text-2xl font-extrabold">
+              Welcome back, {user?.username}! 👋
+            </h1>
             <p className="text-muted">Ready to keep learning?</p>
           </div>
           <div className="flex items-center gap-4">
@@ -59,6 +90,9 @@ export default function Dashboard() {
               <Zap size={20} />
               {user?.xp || 0} XP
             </div>
+            <div className="flex items-center gap-1.5 text-yellow-600 font-bold">
+              🪙 {user?.coins ?? 0} coins
+            </div>
           </div>
         </div>
       </div>
@@ -69,22 +103,30 @@ export default function Dashboard() {
           const { total, done } = progressFor(lang.key);
           const pct = total > 0 ? Math.round((done / total) * 100) : 0;
           const Icon = lang.icon;
+          const isCourseComplete = user?.completedCourses?.includes(lang.key);
           return (
             <Link
               key={lang.key}
               to={`/learn/${lang.key}`}
-              className={`${lang.bg} ${lang.border} border rounded-2xl p-5 hover:shadow-md transition-shadow`}
+              className={`${lang.bg} ${lang.border} border rounded-2xl p-5 hover:shadow-md transition-shadow relative`}
             >
+              {isCourseComplete && (
+                <span className="absolute top-3 right-3 bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                  ✅ Complete
+                </span>
+              )}
               <div className="flex items-center gap-3 mb-2">
                 <div className={`${lang.color}`}>
                   <Icon size={28} />
                 </div>
                 <span className="text-lg font-bold">{lang.name}</span>
               </div>
-              <p className="text-sm text-muted mb-3">{done}/{total} lessons completed</p>
+              <p className="text-sm text-muted mb-3">
+                {done}/{total} lessons completed
+              </p>
               <div className="w-full bg-white rounded-full h-2.5">
                 <div
-                  className={`h-2.5 rounded-full ${lang.color.replace('text-', 'bg-')}`}
+                  className={`h-2.5 rounded-full ${lang.color.replace("text-", "bg-")}`}
                   style={{ width: `${pct}%` }}
                 />
               </div>
@@ -102,14 +144,19 @@ export default function Dashboard() {
           {user?.achievements?.length ? (
             <div className="flex flex-wrap gap-2">
               {user.achievements.slice(-6).map((a) => (
-                <div key={a.id} className="bg-background rounded-xl px-3 py-2 text-sm border border-border">
+                <div
+                  key={a.id}
+                  className="bg-background rounded-xl px-3 py-2 text-sm border border-border"
+                >
                   <span className="mr-1">{a.icon}</span>
                   <span className="font-semibold">{a.name}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-muted text-sm">Complete lessons to earn achievements!</p>
+            <p className="text-muted text-sm">
+              Complete lessons to earn achievements!
+            </p>
           )}
         </div>
 
@@ -123,8 +170,13 @@ export default function Dashboard() {
           ) : (
             <ul className="space-y-2">
               {leaderboard.slice(0, 5).map((u, i) => (
-                <li key={u._id} className="flex items-center justify-between text-sm">
-                  <span className="font-medium">#{i + 1} {u.username}</span>
+                <li
+                  key={u._id}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <span className="font-medium">
+                    #{i + 1} {u.username}
+                  </span>
                   <span className="text-muted">{u.xp} XP</span>
                 </li>
               ))}

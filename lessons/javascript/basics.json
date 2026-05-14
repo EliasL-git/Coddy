@@ -1,0 +1,167 @@
+{
+  "id": "javascript",
+  "name": "Add Interactivity",
+  "description": "Learn JavaScript by adding real interactivity to your web pages.",
+  "icon": "⚡",
+  "difficulty": "beginner",
+  "lessons": [
+    {
+      "id": "js-basics-1",
+      "language": "javascript",
+      "title": "Variables & Output",
+      "description": "Store data in variables and print it to the console.",
+      "unit": "Interactivity Project",
+      "order": 1,
+      "xpReward": 30,
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Declare your first variables",
+          "description": "Variables are labelled boxes that hold data — const for values that won't change, let for ones that will.",
+          "instructions": "Declare a const called name with the value 'Jane Smith', and a let called age with the value 25.",
+          "starterCode": "// Variables store data\n// Declare your variables below\n",
+          "expectedOutput": "const name",
+          "checks": ["const name", "let age"],
+          "hints": ["const name = \"Jane Smith\";\nlet age = 25;"],
+          "xpReward": 10
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Log to the console",
+          "description": "console.log prints values so you can see exactly what your code is doing.",
+          "instructions": "Use console.log to print the name variable, then on a new line log the age variable.",
+          "starterCode": "const name = \"Jane Smith\";\nlet age = 25;\n\n// Log both variables below\n",
+          "expectedOutput": "console.log",
+          "checks": ["console.log(name)", "console.log(age)"],
+          "hints": ["console.log(name);\nconsole.log(age);"],
+          "xpReward": 10
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Use a template literal",
+          "description": "Template literals (backtick strings) let you embed variables directly inside a string using ${} syntax.",
+          "instructions": "Use console.log with a template literal (backtick string) to print: Hello, Jane Smith! You are 25 years old. — using your name and age variables inside ${}.",
+          "starterCode": "const name = \"Jane Smith\";\nlet age = 25;\n\nconsole.log(name);\nconsole.log(age);\n\n// Now log a sentence using a template literal below\n",
+          "expectedOutput": "console.log(`",
+          "checks": ["console.log", "`", "${name}", "${age}"],
+          "hints": [
+            "console.log(`Hello, ${name}! You are ${age} years old.`);"
+          ],
+          "xpReward": 10
+        }
+      ]
+    },
+    {
+      "id": "js-basics-2",
+      "language": "javascript",
+      "title": "Functions & Logic",
+      "description": "Write reusable functions and make decisions with if/else.",
+      "unit": "Interactivity Project",
+      "order": 2,
+      "xpReward": 35,
+      "prerequisites": ["js-basics-1"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Write a greeting function",
+          "description": "Functions bundle code into a named, reusable block you can call any time.",
+          "instructions": "Write a function called greet that takes a parameter called name and returns the string 'Hello, ' + name + '!'",
+          "starterCode": "const name = \"Jane Smith\";\nlet age = 25;\n\nconsole.log(name);\nconsole.log(age);\nconsole.log(`Hello, ${name}! You are ${age} years old.`);\n\n// Write your greet function below\n",
+          "expectedOutput": "function greet",
+          "checks": ["function greet", "return"],
+          "hints": [
+            "function greet(name) {\n  return 'Hello, ' + name + '!';\n}"
+          ],
+          "xpReward": 12
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Add an if/else check",
+          "description": "if/else lets your code take different paths based on a condition.",
+          "instructions": "Write a function called checkAge that takes a parameter age. If age is 18 or more, return the string 'adult'. Otherwise return 'minor'.",
+          "starterCode": "const name = \"Jane Smith\";\nlet age = 25;\n\nconsole.log(name);\nconsole.log(age);\nconsole.log(`Hello, ${name}! You are ${age} years old.`);\n\nfunction greet(name) {\n  return 'Hello, ' + name + '!';\n}\n\n// Write your checkAge function below\n",
+          "expectedOutput": "function checkAge",
+          "checks": ["function checkAge", "if", "return"],
+          "hints": [
+            "function checkAge(age) {\n  if (age >= 18) {\n    return 'adult';\n  } else {\n    return 'minor';\n  }\n}"
+          ],
+          "xpReward": 12
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Call your functions",
+          "description": "A function only runs when you call it. Put yours to work and log the results!",
+          "instructions": "Call greet() passing in the name variable, and call checkAge() passing in the age variable. Log both return values with console.log.",
+          "starterCode": "const name = \"Jane Smith\";\nlet age = 25;\n\nconsole.log(name);\nconsole.log(age);\nconsole.log(`Hello, ${name}! You are ${age} years old.`);\n\nfunction greet(name) {\n  return 'Hello, ' + name + '!';\n}\n\nfunction checkAge(age) {\n  if (age >= 18) {\n    return 'adult';\n  } else {\n    return 'minor';\n  }\n}\n\n// Call both functions and log their results below\n",
+          "expectedOutput": "console.log(greet",
+          "checks": ["greet(", "checkAge(", "console.log"],
+          "hints": ["console.log(greet(name));\nconsole.log(checkAge(age));"],
+          "xpReward": 12
+        }
+      ]
+    },
+    {
+      "id": "js-basics-3",
+      "language": "javascript",
+      "title": "DOM & Events",
+      "description": "Use JavaScript to select page elements and respond to user actions in real time.",
+      "unit": "Interactivity Project",
+      "order": 3,
+      "xpReward": 40,
+      "prerequisites": ["js-basics-2"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Grab an element and change its text",
+          "description": "document.getElementById finds any element on the page by its id attribute.",
+          "instructions": "Use document.getElementById('title') to get the h1 element and store it in a variable called titleEl. Then set titleEl.textContent to 'Welcome to my Portfolio!'.",
+          "starterCode": "// The page has: <h1 id=\"title\">, <button id=\"btn\">, and <p id=\"output\">\n\n// 1. Get the title element and update its text\n",
+          "expectedOutput": "document.getElementById",
+          "checks": ["document.getElementById", "title", "textContent"],
+          "baseHtml": "<h1 id=\"title\">Hello!</h1>\n<button id=\"btn\">Click me</button>\n<p id=\"output\"></p>",
+          "hints": [
+            "const titleEl = document.getElementById('title');\ntitleEl.textContent = 'Welcome to my Portfolio!';"
+          ],
+          "xpReward": 14
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Listen for a click",
+          "description": "addEventListener makes your page respond to user actions like button clicks.",
+          "instructions": "Get the button (id='btn') and output paragraph (id='output'). Add a 'click' event listener to the button. Inside the handler, set output.textContent to 'Button clicked!'.",
+          "starterCode": "// The page has: <h1 id=\"title\">, <button id=\"btn\">, and <p id=\"output\">\n\nconst titleEl = document.getElementById('title');\ntitleEl.textContent = 'Welcome to my Portfolio!';\n\n// 2. Get btn and output, then add a click listener\n",
+          "expectedOutput": "addEventListener",
+          "checks": ["addEventListener", "click", "textContent"],
+          "baseHtml": "<h1 id=\"title\">Hello!</h1>\n<button id=\"btn\">Click me</button>\n<p id=\"output\"></p>",
+          "hints": [
+            "const btn = document.getElementById('btn');\nconst output = document.getElementById('output');\nbtn.addEventListener('click', function() {\n  output.textContent = 'Button clicked!';\n});"
+          ],
+          "xpReward": 14
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Count the clicks",
+          "description": "Combine a variable with a template literal to track and display dynamic data on every click.",
+          "instructions": "Declare a let count = 0 variable. Add a click event listener to the button. Inside the handler, increment count with count++ then set output.textContent to a template literal: 'You clicked X times!' using count.",
+          "starterCode": "// The page has: <h1 id=\"title\">, <button id=\"btn\">, and <p id=\"output\">\n\nconst titleEl = document.getElementById('title');\ntitleEl.textContent = 'Welcome to my Portfolio!';\n\nconst btn = document.getElementById('btn');\nconst output = document.getElementById('output');\n\n// 3. Declare count, then add a click listener that increments\n// it and shows 'You clicked X times!' using a template literal\n",
+          "expectedOutput": "let count",
+          "checks": ["let count", "count++", "textContent"],
+          "baseHtml": "<h1 id=\"title\">Hello!</h1>\n<button id=\"btn\">Click me</button>\n<p id=\"output\"></p>",
+          "hints": [
+            "let count = 0;\nbtn.addEventListener('click', function() {\n  count++;\n  output.textContent = `You clicked ${count} times!`;\n});"
+          ],
+          "xpReward": 14
+        }
+      ]
+    }
+  ]
+}

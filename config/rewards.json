@@ -1,0 +1,10 @@
+{
+  "coins": {
+    "perLessonDefault": 10,
+    "courseCompletionBonus": 50
+  },
+  "shop": {
+    "coinsPerDollar": 60,
+    "currency": "USD"
+  }
+}

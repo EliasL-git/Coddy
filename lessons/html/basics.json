@@ -1,0 +1,156 @@
+{
+  "id": "html",
+  "name": "Build a Portfolio Page",
+  "description": "Learn HTML by building a real personal portfolio page step by step.",
+  "icon": "🌐",
+  "difficulty": "beginner",
+  "lessons": [
+    {
+      "id": "html-basics-1",
+      "language": "html",
+      "title": "Page Structure",
+      "description": "Every webpage starts with an HTML skeleton. Let's build yours.",
+      "unit": "Portfolio Project",
+      "order": 1,
+      "xpReward": 30,
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "The HTML skeleton",
+          "description": "All webpages share the same basic structure.",
+          "instructions": "Create the HTML skeleton: a <!DOCTYPE html> declaration, then <html>, <head> (with a <title>My Portfolio</title>), and <body> tags.",
+          "starterCode": "<!-- Your portfolio starts here! -->\n",
+          "checks": ["<!doctype html>", "<html", "<head>", "<body>", "<title>"],
+          "hints": [
+            "Start with <!DOCTYPE html>",
+            "Then <html><head><title>...</title></head><body></body></html>"
+          ],
+          "xpReward": 10
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Add your name as a heading",
+          "description": "Let visitors know whose portfolio this is!",
+          "instructions": "Inside <body>, add an <h1> tag with your name (use any name you like).",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your h1 heading here -->\n\n  </body>\n</html>\n",
+          "checks": ["<h1>"],
+          "hints": ["<h1>Jane Smith</h1>"],
+          "xpReward": 10
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Introduce yourself",
+          "description": "Add a short bio so visitors know who you are.",
+          "instructions": "Below the <h1>, add a <p> tag with a short sentence about yourself, like 'I am a developer learning to build websites.'",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <!-- Add a <p> paragraph below -->\n\n  </body>\n</html>\n",
+          "checks": ["<p>"],
+          "hints": ["<p>I am a developer learning to build websites.</p>"],
+          "xpReward": 10
+        }
+      ]
+    },
+    {
+      "id": "html-basics-2",
+      "language": "html",
+      "title": "Navigation & Sections",
+      "description": "Add a nav bar and content sections to your portfolio.",
+      "unit": "Portfolio Project",
+      "order": 2,
+      "xpReward": 35,
+      "prerequisites": ["html-basics-1"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Create a navigation bar",
+          "description": "Navbars help visitors jump to different parts of your page.",
+          "instructions": "Add a <nav> element inside <body>. Inside it add two <a> links: one to '#about' with text 'About' and one to '#projects' with text 'Projects'.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <!-- Add your <nav> here -->\n\n  </body>\n</html>\n",
+          "checks": ["<nav>", "<a href"],
+          "hints": [
+            "<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a></nav>"
+          ],
+          "xpReward": 12
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "About Me section",
+          "description": "Give visitors a proper introduction.",
+          "instructions": "Add a <section id=\"about\"> with an <h2> heading 'About Me' and a <p> describing your skills or hobbies.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <!-- Add your About section here -->\n\n  </body>\n</html>\n",
+          "checks": ["<section", "id=", "about", "<h2>"],
+          "hints": [
+            "<section id=\"about\"><h2>About Me</h2><p>I love coding!</p></section>"
+          ],
+          "xpReward": 12
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Projects section",
+          "description": "Show off your work!",
+          "instructions": "Add a <section id=\"projects\"> with an <h2> 'Projects' and at least one <div> containing a project name in an <h3> tag.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <!-- Add your Projects section here -->\n\n  </body>\n</html>\n",
+          "checks": ["<section", "projects", "<h2>", "<h3>"],
+          "hints": [
+            "<section id=\"projects\"><h2>Projects</h2><div><h3>My First Website</h3></div></section>"
+          ],
+          "xpReward": 12
+        }
+      ]
+    },
+    {
+      "id": "html-basics-3",
+      "language": "html",
+      "title": "Links, Images & Contact",
+      "description": "Add media and a contact section to finish your portfolio.",
+      "unit": "Portfolio Project",
+      "order": 3,
+      "xpReward": 40,
+      "prerequisites": ["html-basics-2"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Add a profile photo",
+          "description": "A face to the name makes a portfolio feel personal.",
+          "instructions": "At the top of <body> (before the <h1>), add an <img> with src=\"https://picsum.photos/120\" and alt=\"Profile photo\".",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your <img> here, before the h1 -->\n\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div><h3>My First Website</h3></div>\n    </section>\n  </body>\n</html>\n",
+          "checks": ["<img", "src="],
+          "hints": [
+            "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\">"
+          ],
+          "xpReward": 10
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Link to a project",
+          "description": "Every project card should link somewhere.",
+          "instructions": "Inside your projects <div>, add an <a> tag with href=\"https://github.com\" and text 'View on GitHub'.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My First Website</h3>\n        <!-- Add an <a> link here -->\n      </div>\n    </section>\n  </body>\n</html>\n",
+          "checks": ["<a href=", "github.com"],
+          "hints": ["<a href=\"https://github.com\">View on GitHub</a>"],
+          "xpReward": 10
+        },
+        {
+          "id": "c3",
+          "type": "code",
+          "title": "Add a contact section",
+          "description": "Let people reach you! Use a mailto link for a real-world touch.",
+          "instructions": "Add a <section id=\"contact\"> with an <h2> 'Contact' and an <a href=\"mailto:you@example.com\"> link.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My First Website</h3>\n        <a href=\"https://github.com\">View on GitHub</a>\n      </div>\n    </section>\n    <!-- Add your Contact section here -->\n\n  </body>\n</html>\n",
+          "checks": ["<section", "contact", "mailto:"],
+          "hints": [
+            "<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>"
+          ],
+          "xpReward": 10
+        }
+      ]
+    }
+  ]
+}
