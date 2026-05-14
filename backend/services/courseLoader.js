@@ -110,7 +110,8 @@ function loadCourses() {
   if (errors.length) {
     console.error("Course validation errors:");
     errors.forEach((e) => console.error("  -", e));
-    throw new Error(`Failed to load courses — ${errors.length} error(s) above`);
+    // Do NOT throw here in production — return the valid courses we could load.
+    // Throwing causes the entire API to return 500 if one course JSON is malformed.
   }
 
   return courses;

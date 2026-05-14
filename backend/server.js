@@ -11,7 +11,25 @@ const prizesRoutes = require("./routes/prizes");
 
 const app = express();
 
-app.use(cors());
+// Configure CORS to allow requests from the frontend in production.
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
+    : true,
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors((req, callback) => {
+  // If CORS_ORIGIN is a list, reflect only allowed origins; otherwise allow all.
+  if (Array.isArray(corsOptions.origin)) {
+    const origin = req.header("Origin");
+    const allowed = corsOptions.origin.includes(origin);
+    return callback(null, allowed);
+  }
+  return callback(null, true);
+}));
+app.options("*", cors());
 app.use(express.json());
 
 app.use("/api/check", require("./routes/check"));
