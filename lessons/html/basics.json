@@ -4,6 +4,28 @@
   "description": "Learn HTML by building a real personal portfolio page step by step.",
   "icon": "🌐",
   "difficulty": "beginner",
+  "introduction": {
+    "title": "Welcome to HTML Basics",
+    "description": "HTML is the foundation of the web. It's how we tell the browser what content should be on the page.",
+    "whatYouWillLearn": [
+      "The structure of a webpage",
+      "Headings and paragraphs",
+      "Links and images",
+      "Lists and buttons"
+    ],
+    "examples": [
+      {
+        "title": "A Simple Heading",
+        "code": "<h1>My Awesome Website</h1>",
+        "explanation": "The <h1> tag defines the most important heading on the page."
+      },
+      {
+        "title": "Adding Text",
+        "code": "<p>This is a paragraph of text.</p>",
+        "explanation": "Use <p> tags for regular blocks of text."
+      }
+    ]
+  },
   "lessons": [
     {
       "id": "html-basics-1",
@@ -17,24 +39,79 @@
         {
           "id": "c1",
           "type": "code",
-          "title": "The HTML skeleton",
+          "title": "The HTML Skeleton",
           "description": "All webpages share the same basic structure.",
-          "instructions": "Create the HTML skeleton: a <!DOCTYPE html> declaration, then <html>, <head> (with a <title>My Portfolio</title>), and <body> tags.",
+          "learn": [
+            {
+              "heading": "What is HTML?",
+              "paragraphs": [
+                "HTML stands for HyperText Markup Language. It is the standard language used to create every webpage on the internet — from Google's homepage to your favourite social media feed.",
+                "Think of HTML as the skeleton of a webpage. Just like your skeleton gives your body its shape and structure, HTML gives a webpage its structure. Without it, the browser would have no idea what to display."
+              ],
+              "snippet": null
+            },
+            {
+              "heading": "Tags — the building blocks",
+              "paragraphs": [
+                "HTML is made up of elements called tags. A tag is a keyword wrapped in angle brackets, like `<p>` or `<h1>`.",
+                "Most tags come in pairs: an opening tag `<tagname>` and a closing tag `</tagname>` (note the forward slash). Your content goes between the two.",
+                "Some tags are self-closing — they do not need a closing tag. `<img>` and `<br>` are the most common examples. You will meet those soon."
+              ],
+              "snippet": "<p>I am a paragraph.</p>\n<h1>I am a big heading</h1>"
+            },
+            {
+              "heading": "The DOCTYPE Declaration",
+              "paragraphs": [
+                "Every HTML file must begin with exactly one line: `<!DOCTYPE html>`. This is not a tag — it is a declaration that tells the browser 'this document is HTML5'.",
+                "Without it, some browsers fall into 'quirks mode' and render your page in strange, unpredictable ways. Always include it as the very first line."
+              ],
+              "snippet": "<!DOCTYPE html>"
+            },
+            {
+              "heading": "Head and Body",
+              "paragraphs": [
+                "After `<!DOCTYPE html>`, you wrap everything in an `<html>` element. Inside `<html>` there are exactly two children:",
+                "`<head>` — invisible metadata about the page: its title (shown in the browser tab), links to stylesheets, and scripts.",
+                "`<body>` — everything the user actually sees: text, images, buttons, forms. This is where you will spend most of your time.",
+                "Copy the snippet below into the editor to get started — then personalise the title!"
+              ],
+              "snippet": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Your content goes here -->\n  </body>\n</html>"
+            }
+          ],
+          "instructions": "Build the full HTML skeleton: add `<!DOCTYPE html>`, then `<html>`, inside it `<head>` containing `<title>My Portfolio</title>`, and `<body>` tags.",
           "starterCode": "<!-- Your portfolio starts here! -->\n",
           "checks": ["<!doctype html>", "<html", "<head>", "<body>", "<title>"],
           "hints": [
-            "Start with <!DOCTYPE html>",
-            "Then <html><head><title>...</title></head><body></body></html>"
+            "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n\n  </body>\n</html>"
           ],
           "xpReward": 10
         },
         {
           "id": "c2",
           "type": "code",
-          "title": "Add your name as a heading",
+          "title": "Add Your Name as a Heading",
           "description": "Let visitors know whose portfolio this is!",
-          "instructions": "Inside <body>, add an <h1> tag with your name (use any name you like).",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your h1 heading here -->\n\n  </body>\n</html>\n",
+          "learn": [
+            {
+              "heading": "Heading Elements",
+              "paragraphs": [
+                "HTML provides six heading levels: `<h1>` through `<h6>`. `<h1>` is the largest and most important; `<h6>` is the smallest.",
+                "Headings are not just about size — they carry meaning. Screen readers and search engines use them to understand what a page is about. Always use one `<h1>` per page as the main title."
+              ],
+              "snippet": "<h1>Main Title</h1>\n<h2>Sub-heading</h2>\n<h3>Smaller heading</h3>"
+            },
+            {
+              "heading": "Using h1 for Your Name",
+              "paragraphs": [
+                "On a portfolio page, your name is the most important piece of information — it is what recruiters, collaborators and clients see first.",
+                "Add an `<h1>` tag inside `<body>` with your name inside it. You can use any name you like for now and change it later.",
+                "Notice how the browser automatically makes `<h1>` large and bold — no CSS required yet. That is the browser's default stylesheet doing the work."
+              ],
+              "snippet": "<h1>Jane Smith</h1>"
+            }
+          ],
+          "instructions": "Inside the `<body>` tag, add an `<h1>` element containing your name.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your <h1> heading here -->\n\n  </body>\n</html>\n",
           "checks": ["<h1>"],
           "hints": ["<h1>Jane Smith</h1>"],
           "xpReward": 10
@@ -42,10 +119,28 @@
         {
           "id": "c3",
           "type": "code",
-          "title": "Introduce yourself",
+          "title": "Introduce Yourself",
           "description": "Add a short bio so visitors know who you are.",
-          "instructions": "Below the <h1>, add a <p> tag with a short sentence about yourself, like 'I am a developer learning to build websites.'",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <!-- Add a <p> paragraph below -->\n\n  </body>\n</html>\n",
+          "learn": [
+            {
+              "heading": "Paragraphs in HTML",
+              "paragraphs": [
+                "Paragraphs are the most common way to add readable text to a webpage. The `<p>` tag wraps a block of text into a paragraph.",
+                "Browsers automatically add a small margin above and below each `<p>` element, giving your text breathing room. You do not need to add blank lines manually — HTML ignores extra whitespace in your source code."
+              ],
+              "snippet": "<p>This is my first paragraph.</p>\n<p>This is a second paragraph. It sits below the first one.</p>"
+            },
+            {
+              "heading": "Write Your Bio",
+              "paragraphs": [
+                "Every portfolio has a short bio — a sentence or two that tells visitors who you are and what you do.",
+                "Add a `<p>` tag directly below your `<h1>`. Keep it short and genuine. Something like 'I am a developer learning to build websites.' works perfectly for now."
+              ],
+              "snippet": "<p>I am a developer learning to build websites.</p>"
+            }
+          ],
+          "instructions": "Below the `<h1>`, add a `<p>` tag with one or two sentences introducing yourself.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <!-- Add your <p> paragraph below -->\n\n  </body>\n</html>\n",
           "checks": ["<p>"],
           "hints": ["<p>I am a developer learning to build websites.</p>"],
           "xpReward": 10
@@ -65,39 +160,103 @@
         {
           "id": "c1",
           "type": "code",
-          "title": "Create a navigation bar",
+          "title": "Create a Navigation Bar",
           "description": "Navbars help visitors jump to different parts of your page.",
-          "instructions": "Add a <nav> element inside <body>. Inside it add two <a> links: one to '#about' with text 'About' and one to '#projects' with text 'Projects'.",
+          "learn": [
+            {
+              "heading": "Semantic HTML",
+              "paragraphs": [
+                "HTML5 introduced 'semantic' elements — tags whose names describe their purpose. Instead of using `<div>` for everything, you use meaningful names like `<nav>`, `<header>`, `<section>`, and `<footer>`.",
+                "Semantic HTML is important for three reasons: it helps screen readers navigate for visually impaired users, it helps search engines understand your content, and it makes your code far easier to read and maintain."
+              ],
+              "snippet": null
+            },
+            {
+              "heading": "The nav Element",
+              "paragraphs": [
+                "The `<nav>` element wraps a group of navigation links. It signals to browsers, search engines, and assistive technologies: 'this area helps users move around the site'.",
+                "You can place `<nav>` inside `<header>` or directly in `<body>`. For now, add it after your intro paragraph."
+              ],
+              "snippet": "<nav>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n</nav>"
+            },
+            {
+              "heading": "Anchor Tags and href",
+              "paragraphs": [
+                "Links in HTML use the `<a>` (anchor) tag. The destination is set with the `href` attribute — short for Hypertext REFerence.",
+                "To link to a section on the same page, use a `#` followed by the section's `id`, like `href=\"#about\"`. When clicked, the browser jumps smoothly to that section.",
+                "The text between `<a>` and `</a>` is what the user sees and clicks."
+              ],
+              "snippet": "<a href=\"#about\">About</a>\n<a href=\"#projects\">Projects</a>"
+            }
+          ],
+          "instructions": "Add a `<nav>` element inside `<body>`. Inside it, add two `<a>` links: one pointing to `#about` with text 'About', and one pointing to `#projects` with text 'Projects'.",
           "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <!-- Add your <nav> here -->\n\n  </body>\n</html>\n",
           "checks": ["<nav>", "<a href"],
           "hints": [
-            "<nav><a href=\"#about\">About</a> <a href=\"#projects\">Projects</a></nav>"
+            "<nav>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n</nav>"
           ],
           "xpReward": 12
         },
         {
           "id": "c2",
           "type": "code",
-          "title": "About Me section",
+          "title": "About Me Section",
           "description": "Give visitors a proper introduction.",
-          "instructions": "Add a <section id=\"about\"> with an <h2> heading 'About Me' and a <p> describing your skills or hobbies.",
+          "learn": [
+            {
+              "heading": "Dividing Your Page into Sections",
+              "paragraphs": [
+                "As pages grow, you need to divide content into logical regions. HTML5's `<section>` element groups related content together — like an 'About' area or a 'Projects' area.",
+                "Unlike a generic `<div>`, a `<section>` signals that its contents are thematically related. It should generally have a heading inside it."
+              ],
+              "snippet": "<section>\n  <h2>About Me</h2>\n  <p>Some text about me...</p>\n</section>"
+            },
+            {
+              "heading": "The id Attribute",
+              "paragraphs": [
+                "The `id` attribute gives an element a unique name on the page. No two elements should share the same `id`.",
+                "IDs are used for two things: navigating within a page (via `href=\"#id\"`) and targeting elements with CSS or JavaScript. Remember your `<nav>` links point to `#about` and `#projects` — those IDs go on your `<section>` elements.",
+                "Add `id=\"about\"` to your section tag: `<section id=\"about\">`."
+              ],
+              "snippet": "<section id=\"about\">\n  <h2>About Me</h2>\n  <p>I love coding and building things!</p>\n</section>"
+            }
+          ],
+          "instructions": "Add a `<section id=\"about\">` after the `<nav>`. Inside it, put an `<h2>` with text 'About Me' and a `<p>` describing your interests or skills.",
           "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <!-- Add your About section here -->\n\n  </body>\n</html>\n",
           "checks": ["<section", "id=", "about", "<h2>"],
           "hints": [
-            "<section id=\"about\"><h2>About Me</h2><p>I love coding!</p></section>"
+            "<section id=\"about\">\n  <h2>About Me</h2>\n  <p>I love coding and building things!</p>\n</section>"
           ],
           "xpReward": 12
         },
         {
           "id": "c3",
           "type": "code",
-          "title": "Projects section",
+          "title": "Projects Section",
           "description": "Show off your work!",
-          "instructions": "Add a <section id=\"projects\"> with an <h2> 'Projects' and at least one <div> containing a project name in an <h3> tag.",
+          "learn": [
+            {
+              "heading": "Organising Content with div",
+              "paragraphs": [
+                "The `<div>` element is a generic container — it groups other elements together without adding any visual meaning. It's the most flexible building block in HTML.",
+                "Divs are useful for wrapping content you want to style together, like a project 'card': an image, a title, a description, and a link all inside one `<div>`."
+              ],
+              "snippet": "<div>\n  <h3>My First Website</h3>\n  <p>A portfolio built with HTML.</p>\n</div>"
+            },
+            {
+              "heading": "Heading Hierarchy",
+              "paragraphs": [
+                "You already used `<h1>` for your name and `<h2>` for section titles. Inside a section, use `<h3>` for card-level titles.",
+                "Think of headings like a document outline: `<h1>` is the document title, `<h2>` are chapter names, `<h3>` are sub-topics within chapters. This hierarchy helps search engines index your content correctly."
+              ],
+              "snippet": "<section id=\"projects\">\n  <h2>Projects</h2>\n  <div>\n    <h3>My Portfolio Site</h3>\n  </div>\n</section>"
+            }
+          ],
+          "instructions": "Add a `<section id=\"projects\">` after the About section. Inside it, add an `<h2>` with text 'Projects', then a `<div>` containing an `<h3>` with a project name of your choice.",
           "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <!-- Add your Projects section here -->\n\n  </body>\n</html>\n",
           "checks": ["<section", "projects", "<h2>", "<h3>"],
           "hints": [
-            "<section id=\"projects\"><h2>Projects</h2><div><h3>My First Website</h3></div></section>"
+            "<section id=\"projects\">\n  <h2>Projects</h2>\n  <div>\n    <h3>My Portfolio Site</h3>\n  </div>\n</section>"
           ],
           "xpReward": 12
         }
@@ -116,10 +275,29 @@
         {
           "id": "c1",
           "type": "code",
-          "title": "Add a profile photo",
+          "title": "Add a Profile Photo",
           "description": "A face to the name makes a portfolio feel personal.",
-          "instructions": "At the top of <body> (before the <h1>), add an <img> with src=\"https://picsum.photos/120\" and alt=\"Profile photo\".",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your <img> here, before the h1 -->\n\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div><h3>My First Website</h3></div>\n    </section>\n  </body>\n</html>\n",
+          "learn": [
+            {
+              "heading": "Images in HTML",
+              "paragraphs": [
+                "The `<img>` tag embeds an image into a webpage. Unlike most HTML elements, `<img>` is self-closing — it has no closing tag and no content between tags.",
+                "Every `<img>` needs at least two attributes: `src` (the image source — a URL or file path) and `alt` (alternative text that describes the image for screen readers and shows if the image fails to load)."
+              ],
+              "snippet": "<img src=\"https://picsum.photos/120\" alt=\"A placeholder image\">"
+            },
+            {
+              "heading": "Attributes",
+              "paragraphs": [
+                "Attributes add extra information to an HTML element. They always go inside the opening tag and follow the format `name=\"value\"`.",
+                "You have already seen `id`, `href`, and now `src` and `alt`. HTML has dozens of attributes — you will pick them up naturally as you build more things.",
+                "The `alt` attribute is important for accessibility. Screen readers read it aloud to visually impaired users. Always write a meaningful description."
+              ],
+              "snippet": "<img\n  src=\"https://picsum.photos/120\"\n  alt=\"Profile photo of Jane Smith\"\n>"
+            }
+          ],
+          "instructions": "Before the `<h1>`, add an `<img>` tag with `src=\"https://picsum.photos/120\"` and an `alt` attribute describing the image.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <!-- Add your <img> here, before the h1 -->\n\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div><h3>My Portfolio Site</h3></div>\n    </section>\n  </body>\n</html>\n",
           "checks": ["<img", "src="],
           "hints": [
             "<img src=\"https://picsum.photos/120\" alt=\"Profile photo\">"
@@ -129,24 +307,62 @@
         {
           "id": "c2",
           "type": "code",
-          "title": "Link to a project",
+          "title": "Link to a Project",
           "description": "Every project card should link somewhere.",
-          "instructions": "Inside your projects <div>, add an <a> tag with href=\"https://github.com\" and text 'View on GitHub'.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My First Website</h3>\n        <!-- Add an <a> link here -->\n      </div>\n    </section>\n  </body>\n</html>\n",
+          "learn": [
+            {
+              "heading": "Hyperlinks — the Web's Superpower",
+              "paragraphs": [
+                "The ability to link from one document to another is what makes the internet a 'web'. Every `<a>` tag is a hyperlink that connects pages together.",
+                "The `href` attribute sets the destination. It can be a full URL (`https://github.com`), a relative path (`/about`), or an anchor on the same page (`#projects`)."
+              ],
+              "snippet": null
+            },
+            {
+              "heading": "External Links",
+              "paragraphs": [
+                "When linking to an external site, always include the full URL starting with `https://`. Without the protocol, the browser will treat it as a relative path and get lost.",
+                "Optionally, add `target=\"_blank\"` to make the link open in a new browser tab — useful for external links so the user doesn't leave your portfolio."
+              ],
+              "snippet": "<a href=\"https://github.com\" target=\"_blank\">View on GitHub</a>"
+            }
+          ],
+          "instructions": "Inside your projects `<div>`, after the `<h3>`, add an `<a>` tag with `href=\"https://github.com\"` and the text 'View on GitHub'.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My Portfolio Site</h3>\n        <!-- Add an <a> link here -->\n      </div>\n    </section>\n  </body>\n</html>\n",
           "checks": ["<a href=", "github.com"],
-          "hints": ["<a href=\"https://github.com\">View on GitHub</a>"],
+          "hints": [
+            "<a href=\"https://github.com\" target=\"_blank\">View on GitHub</a>"
+          ],
           "xpReward": 10
         },
         {
           "id": "c3",
           "type": "code",
-          "title": "Add a contact section",
+          "title": "Contact Section",
           "description": "Let people reach you! Use a mailto link for a real-world touch.",
-          "instructions": "Add a <section id=\"contact\"> with an <h2> 'Contact' and an <a href=\"mailto:you@example.com\"> link.",
-          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My First Website</h3>\n        <a href=\"https://github.com\">View on GitHub</a>\n      </div>\n    </section>\n    <!-- Add your Contact section here -->\n\n  </body>\n</html>\n",
+          "learn": [
+            {
+              "heading": "The mailto Protocol",
+              "paragraphs": [
+                "HTML links don't only go to web pages. The `mailto:` protocol opens the user's email client with the 'To' field already filled in.",
+                "It's one of the oldest and simplest ways to add contact functionality to a site — no server required."
+              ],
+              "snippet": "<a href=\"mailto:you@example.com\">Send me an email</a>"
+            },
+            {
+              "heading": "Wrapping Up Your Portfolio",
+              "paragraphs": [
+                "You now know enough HTML to build a real, structured webpage. Your portfolio has a navigation bar, sections, headings, a photo, links, and soon a contact section.",
+                "Add a final `<section id=\"contact\">` after your projects section. Give it an `<h2>` heading and a `mailto:` link. Then you will have a complete first version of your portfolio — built entirely by hand!"
+              ],
+              "snippet": "<section id=\"contact\">\n  <h2>Contact</h2>\n  <a href=\"mailto:you@example.com\">Email me</a>\n</section>"
+            }
+          ],
+          "instructions": "Add a `<section id=\"contact\">` after the projects section, containing an `<h2>` with text 'Contact' and an `<a>` with a `mailto:` link.",
+          "starterCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Portfolio</title>\n  </head>\n  <body>\n    <img src=\"https://picsum.photos/120\" alt=\"Profile photo\">\n    <h1>Jane Smith</h1>\n    <p>I am a developer learning to build websites.</p>\n    <nav>\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n    </nav>\n    <section id=\"about\">\n      <h2>About Me</h2>\n      <p>I love coding and building things!</p>\n    </section>\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <div>\n        <h3>My Portfolio Site</h3>\n        <a href=\"https://github.com\" target=\"_blank\">View on GitHub</a>\n      </div>\n    </section>\n    <!-- Add your Contact section here -->\n\n  </body>\n</html>\n",
           "checks": ["<section", "contact", "mailto:"],
           "hints": [
-            "<section id=\"contact\"><h2>Contact</h2><a href=\"mailto:you@example.com\">Email me</a></section>"
+            "<section id=\"contact\">\n  <h2>Contact</h2>\n  <a href=\"mailto:you@example.com\">Email me</a>\n</section>"
           ],
           "xpReward": 10
         }

@@ -6,7 +6,6 @@ import { api } from "../api/client";
 import LivePreview from "../components/LivePreview";
 import {
   CheckCircle2,
-  XCircle,
   Lightbulb,
   ArrowRight,
   RotateCcw,
@@ -14,10 +13,11 @@ import {
   Zap,
   Play,
   ChevronLeft,
-  Coins,
   BookOpen,
   Monitor,
   Code2,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 
 // ─── Monaco language map ──────────────────────────────────────────────────────
@@ -40,22 +40,19 @@ const EDITOR_OPTIONS = {
   padding: { top: 12, bottom: 12 },
 };
 
-// ─── Validation ───────────────────────────────────────────────────────────────
-
-/**
- * Returns { passed: bool, missing: string[] }
- * Uses challenge.checks (preferred) or falls back to challenge.expectedOutput.
- * Normalises whitespace and quotes before comparing.
- */
-function validate(code, challenge) {
+// Client-side fallback — used only when the /api/check network call fails.
+function localValidate(code, challenge) {
   const norm = code
     .toLowerCase()
     .replace(/['"]/g, '"')
     .replace(/\s+/g, " ")
     .trim();
-
+  if (!norm)
+    return {
+      valid: false,
+      fix: "Add your code above, then press Check Answer.",
+    };
   const checks = challenge.checks || [];
-
   if (checks.length) {
     const missing = checks.filter(
       (c) =>
@@ -63,21 +60,13 @@ function validate(code, challenge) {
           c.toLowerCase().replace(/['"]/g, '"').replace(/\s+/g, " ").trim(),
         ),
     );
-    return { passed: missing.length === 0, missing };
+    if (missing.length)
+      return {
+        valid: false,
+        fix: `Your code is missing: ${missing.map((m) => `\`${m}\``).join(", ")}.`,
+      };
   }
-
-  if (challenge.expectedOutput) {
-    const expected = challenge.expectedOutput
-      .toLowerCase()
-      .replace(/['"]/g, '"')
-      .replace(/\s+/g, " ")
-      .trim();
-    const passed =
-      norm.includes(expected) || expected.includes(norm.slice(0, 40));
-    return { passed, missing: [] };
-  }
-
-  return { passed: true, missing: [] };
+  return { valid: true, fix: null };
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -119,8 +108,13 @@ export default function LessonPage() {
   const [courseCompleted, setCourseCompleted] = useState(null);
   const [earnedXp, setEarnedXp] = useState(0);
   const [earnedCoins, setEarnedCoins] = useState(0);
-  const [runKey, setRunKey] = useState(0); // incremented to re-run JS
+  const [runKey, setRunKey] = useState(0);
+  // For JS: snapshot of code at the moment Run is clicked.
+  // LivePreview receives this instead of the live `code` so the console
+  // only updates when the student intentionally runs, not on every keystroke.
+  const [codeToRun, setCodeToRun] = useState("");
   const [activeTab, setActiveTab] = useState("editor"); // mobile tabs
+  const [checking, setChecking] = useState(false);
 
   // ── Load lesson ──
   useEffect(() => {
@@ -128,11 +122,16 @@ export default function LessonPage() {
       .get(id)
       .then((data) => {
         setLesson(data);
-        setCode(data.challenges?.[0]?.starterCode ?? "");
+        const lang = data.language ?? "html";
+        // If the user has saved code for this language, use it.
+        // Otherwise use the starter code for the FIRST challenge.
+        const initialCode =
+          user?.siteCode?.[lang] || data.challenges?.[0]?.starterCode || "";
+        setCode(initialCode);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id]); // Only on mount/id change
 
   const challenge = lesson?.challenges?.[currentIdx];
   const lang = lesson?.language ?? "html";
@@ -140,45 +139,51 @@ export default function LessonPage() {
 
   // ── Handlers ──
 
-  const handleCheck = useCallback(() => {
-    if (!challenge) return;
-    const result = validate(code, challenge);
-    if (result.passed) {
-      setFeedback({
-        type: "success",
-        message: "Great work! That's correct. 🎉",
-      });
-    } else {
-      const missing = result.missing.length
-        ? `Missing: ${result.missing.map((m) => `\`${m}\``).join(", ")}`
-        : "Not quite — review the instructions and try again.";
-      setFeedback({ type: "error", message: missing });
-    }
-  }, [code, challenge]);
+  const handleCheck = useCallback(async () => {
+    if (!challenge || !lesson || checking) return;
+    setChecking(true);
+    setFeedback(null);
+    try {
+      const result = await api.check(lesson.id, challenge.id, code);
 
-  const handleNext = useCallback(() => {
-    const challenges = lesson?.challenges ?? [];
-    if (currentIdx + 1 < challenges.length) {
-      const next = challenges[currentIdx + 1];
-      setCurrentIdx((i) => i + 1);
-      setCode(next.starterCode ?? "");
-      setFeedback(null);
-      setHintsOpen(false);
-      setRunKey(0);
-    } else {
-      finishLesson();
+      // Update local user state if provided (contains updated siteCode)
+      if (result.user) {
+        updateUser(result.user);
+      }
+
+      // Backend returns { valid, fix, aiPowered }
+      setFeedback({
+        valid: result.valid,
+        fix: result.fix, // null when valid, guidance string when not
+        aiPowered: result.aiPowered,
+      });
+    } catch {
+      // Network error — fall back to local so the student is never blocked
+      const result = localValidate(code, challenge);
+      setFeedback({ valid: result.valid, fix: result.fix, aiPowered: false });
+    } finally {
+      setChecking(false);
     }
-  }, [currentIdx, lesson]);
+  }, [code, challenge, lesson, checking]);
+
+  // Auto-advance when valid — 1.5 s delay lets the student see the green flash
+  useEffect(() => {
+    if (!feedback?.valid) return;
+    const t = setTimeout(handleNext, 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedback]);
 
   const handleReset = useCallback(() => {
     setCode(challenge?.starterCode ?? "");
     setFeedback(null);
   }, [challenge]);
 
-  async function finishLesson() {
+  const finishLesson = useCallback(async () => {
     try {
-      const data = await api.lessons.complete(lesson.id);
+      const data = await api.lessons.complete(id);
       updateUser({
+        ...user,
         xp: data.xp,
         coins: data.coins,
         streak: data.streak,
@@ -194,7 +199,27 @@ export default function LessonPage() {
       // still show completion screen
     }
     setCompleted(true);
-  }
+  }, [id, lesson, updateUser, user]);
+
+  const handleNext = useCallback(() => {
+    const challenges = lesson?.challenges ?? [];
+    if (currentIdx + 1 < challenges.length) {
+      const nextIdx = currentIdx + 1;
+      const next = challenges[nextIdx];
+      setCurrentIdx(nextIdx);
+
+      const lang = lesson?.language ?? "html";
+      // Continue with their work, or use next challenge starter if they have nothing
+      setCode(user?.siteCode?.[lang] || next.starterCode || "");
+
+      setCodeToRun("");
+      setFeedback(null);
+      setHintsOpen(false);
+      setRunKey(0);
+    } else {
+      finishLesson();
+    }
+  }, [currentIdx, lesson, user, finishLesson]);
 
   // ── Loading ──
   if (loading) {
@@ -439,7 +464,8 @@ export default function LessonPage() {
                 value={code}
                 onChange={(v) => {
                   setCode(v ?? "");
-                  setFeedback(null);
+                  // Clear fix guidance as soon as the student starts editing
+                  if (feedback && !feedback.valid) setFeedback(null);
                 }}
                 theme="vs-dark"
                 options={EDITOR_OPTIONS}
@@ -464,7 +490,10 @@ export default function LessonPage() {
               <span>{isJs ? "console output" : "live preview"}</span>
               {isJs && (
                 <button
-                  onClick={() => setRunKey((k) => k + 1)}
+                  onClick={() => {
+                    setCodeToRun(code);
+                    setRunKey((k) => k + 1);
+                  }}
                   className="ml-auto flex items-center gap-1 bg-green-700 hover:bg-green-600 text-white px-2 py-0.5 rounded text-xs font-semibold transition-colors"
                 >
                   <Play size={10} /> Run
@@ -473,62 +502,78 @@ export default function LessonPage() {
             </div>
             <div className="flex-1 min-h-0">
               <LivePreview
-                code={code}
+                code={isJs ? codeToRun : code}
                 language={lang}
-                baseHtml={challenge?.baseHtml}
+                baseHtml={challenge?.baseHtml || user?.siteCode?.html}
+                baseCss={user?.siteCode?.css}
                 runKey={runKey}
               />
             </div>
           </div>
 
-          {/* ── Footer toolbar ── */}
-          <div className="shrink-0 bg-[#2d2d2d] border-t border-gray-700 px-4 py-2 flex items-center gap-2">
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors px-2 py-1.5 rounded hover:bg-gray-700"
-            >
-              <RotateCcw size={13} /> Reset
-            </button>
-
-            {/* Feedback inline */}
-            {feedback && (
-              <div
-                className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg ${
-                  feedback.type === "success"
-                    ? "bg-green-900/50 text-green-400 border border-green-700"
-                    : "bg-red-900/50 text-red-400 border border-red-800"
-                }`}
-              >
-                {feedback.type === "success" ? (
-                  <CheckCircle2 size={13} />
-                ) : (
-                  <XCircle size={13} />
+          {/* ── Fix guidance (shown when invalid) ── */}
+          {feedback && !feedback.valid && feedback.fix && (
+            <div className="shrink-0 bg-[#0d1a2d] border-t border-blue-900 px-4 py-3">
+              <p className="text-xs font-bold text-blue-400 flex items-center gap-1.5 mb-1.5">
+                <Lightbulb size={12} />
+                How to fix it
+                {feedback.aiPowered && (
+                  <span className="flex items-center gap-0.5 text-purple-400 ml-1">
+                    <Sparkles size={10} /> AI
+                  </span>
                 )}
-                <span className="max-w-xs truncate">{feedback.message}</span>
+              </p>
+              <p className="text-sm text-blue-300 leading-relaxed">
+                {feedback.fix}
+              </p>
+            </div>
+          )}
+
+          {/* ── Success zone (auto-advance) ── */}
+          {feedback?.valid && (
+            <div className="shrink-0 bg-green-950/60 border-t border-green-800 px-4 py-3 flex items-center gap-3">
+              <CheckCircle2 size={16} className="text-green-400 shrink-0" />
+              <div>
+                <p className="text-green-400 font-bold text-sm">Correct!</p>
+                <p className="text-green-700 text-xs">
+                  Moving to the next step…
+                </p>
               </div>
-            )}
-
-            <div className="flex-1" />
-
-            {!feedback || feedback.type === "error" ? (
-              <button
-                onClick={handleCheck}
-                className="bg-primary hover:bg-primary-dark text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors"
-              >
-                Check Answer
-              </button>
-            ) : (
+              <div className="flex-1" />
               <button
                 onClick={handleNext}
-                className="bg-primary hover:bg-primary-dark text-white font-bold px-5 py-2 rounded-xl text-sm flex items-center gap-1.5 transition-colors"
+                className="flex items-center gap-1.5 text-green-400 hover:text-green-300 text-sm font-semibold border border-green-800 hover:border-green-700 rounded-lg px-3 py-1.5 transition-colors"
               >
-                {currentIdx + 1 < challenges.length
-                  ? "Next Step"
-                  : "Finish Lesson"}
-                <ArrowRight size={15} />
+                Skip now <ArrowRight size={13} />
               </button>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* ── Toolbar (hidden once valid) ── */}
+          {!feedback?.valid && (
+            <div className="shrink-0 bg-[#2d2d2d] border-t border-gray-700 px-4 py-2 flex items-center gap-2">
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors px-2 py-1.5 rounded hover:bg-gray-700"
+              >
+                <RotateCcw size={13} /> Reset
+              </button>
+              <div className="flex-1" />
+              <button
+                onClick={handleCheck}
+                disabled={checking}
+                className="flex items-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors"
+              >
+                {checking ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" /> Checking…
+                  </>
+                ) : (
+                  <>Check Answer</>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

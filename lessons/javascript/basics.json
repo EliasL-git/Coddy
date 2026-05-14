@@ -4,6 +4,28 @@
   "description": "Learn JavaScript by adding real interactivity to your web pages.",
   "icon": "⚡",
   "difficulty": "beginner",
+  "introduction": {
+    "title": "Make it Interactive with JavaScript",
+    "description": "JavaScript is the programming language of the web. It allows you to make your site do things when users click, type, or scroll.",
+    "whatYouWillLearn": [
+      "Working with variables",
+      "Handling button clicks",
+      "Changing content dynamically",
+      "Simple logic and conditions"
+    ],
+    "examples": [
+      {
+        "title": "Showing an Alert",
+        "code": "alert('Hello from Coddy!');",
+        "explanation": "This pops up a message in the browser."
+      },
+      {
+        "title": "Changing Content",
+        "code": "document.querySelector('h1').innerText = 'Changed!';",
+        "explanation": "This finds the first <h1> and changes its text."
+      }
+    ]
+  },
   "lessons": [
     {
       "id": "js-basics-1",

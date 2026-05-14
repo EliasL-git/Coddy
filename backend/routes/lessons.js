@@ -2,8 +2,23 @@ const express = require("express");
 const path = require("path");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
-const { loadLessons } = require("../services/courseLoader");
+const { loadLessons, loadCourses } = require("../services/courseLoader");
 const router = express.Router();
+
+// GET /api/lessons/courses?language=html
+router.get("/courses", (req, res) => {
+  try {
+    let courses = loadCourses();
+    if (req.query.language) {
+      courses = courses.filter((c) =>
+        c.lessons.some((l) => l.language === req.query.language),
+      );
+    }
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // GET /api/lessons[?language=html|css|javascript]
 router.get("/", (req, res) => {

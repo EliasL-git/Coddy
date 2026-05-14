@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
         completedCourses: user.completedCourses,
         achievements: user.achievements,
         role: user.role,
+        siteCode: user.siteCode,
       },
     });
   } catch (err) {
@@ -67,6 +68,7 @@ router.post("/login", async (req, res) => {
         completedCourses: user.completedCourses,
         achievements: user.achievements,
         role: user.role,
+        siteCode: user.siteCode,
       },
     });
   } catch (err) {

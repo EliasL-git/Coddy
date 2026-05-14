@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/check", require("./routes/check"));
 app.use("/api/auth", authRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/user", userRoutes);

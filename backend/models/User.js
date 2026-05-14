@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema(
     achievements: [achievementSchema],
     avatar: { type: String, default: "" },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    siteCode: {
+      html: { type: String, default: "" },
+      css: { type: String, default: "" },
+      js: { type: String, default: "" },
+    },
   },
   { timestamps: true },
 );

@@ -21,6 +21,11 @@ async function fetcher(url, options = {}) {
 }
 
 export const api = {
+  check: (lessonId, challengeId, code) =>
+    fetcher("/api/check", {
+      method: "POST",
+      body: JSON.stringify({ lessonId, challengeId, code }),
+    }),
   auth: {
     register: (body) =>
       fetcher("/api/auth/register", {
@@ -40,6 +45,8 @@ export const api = {
   lessons: {
     list: (language) =>
       fetcher(`/api/lessons${language ? `?language=${language}` : ""}`),
+    getCourses: (language) =>
+      fetcher(`/api/lessons/courses${language ? `?language=${language}` : ""}`),
     get: (id) => fetcher(`/api/lessons/${id}`),
     complete: (id) =>
       fetcher(`/api/lessons/${id}/complete`, { method: "POST" }),

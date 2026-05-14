@@ -4,6 +4,28 @@
   "description": "Learn CSS by styling the personal portfolio page you built with HTML.",
   "icon": "🎨",
   "difficulty": "beginner",
+  "introduction": {
+    "title": "Style with CSS",
+    "description": "CSS (Cascading Style Sheets) is what makes websites look beautiful. It handles colors, fonts, layouts, and animations.",
+    "whatYouWillLearn": [
+      "Changing colors and backgrounds",
+      "Setting font sizes and styles",
+      "Controlling spacing (margin and padding)",
+      "Creating layouts with Flexbox"
+    ],
+    "examples": [
+      {
+        "title": "Coloring Text",
+        "code": "h1 {\n  color: blue;\n}",
+        "explanation": "This selects all <h1> elements and turns them blue."
+      },
+      {
+        "title": "Adding Spacing",
+        "code": "p {\n  padding: 20px;\n  background-color: #f0f0f0;\n}",
+        "explanation": "This adds space inside paragraphs and sets a light gray background."
+      }
+    ]
+  },
   "lessons": [
     {
       "id": "css-basics-1",
