@@ -1,0 +1,91 @@
+{
+  "id": "javascript",
+  "name": "JavaScript",
+  "description": "Add interactivity with JavaScript",
+  "icon": "⚡",
+  "difficulty": "beginner",
+  "lessons": [
+    {
+      "id": "js-basics-1",
+      "language": "javascript",
+      "title": "Variables & Console",
+      "description": "Learn to declare variables and log to console.",
+      "unit": "Basics",
+      "order": 1,
+      "difficulty": "beginner",
+      "xpReward": 20,
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Declare a Variable",
+          "description": "Create a variable called name",
+          "instructions": "Use let to declare a variable called name with value \"Coddy\".",
+          "starterCode": "// Write your code below\n",
+          "expectedOutput": "let name = \"coddy\";",
+          "hints": ["let name = \"Coddy\";"],
+          "xpReward": 10
+        },
+        {
+          "id": "c2",
+          "type": "code",
+          "title": "Console Log",
+          "description": "Print something to the console",
+          "instructions": "Use console.log to print \"Hello JS\".",
+          "starterCode": "",
+          "expectedOutput": "console.log(\"hello js\");",
+          "hints": ["console.log(\"Hello JS\");"],
+          "xpReward": 10
+        }
+      ]
+    },
+    {
+      "id": "js-basics-2",
+      "language": "javascript",
+      "title": "Functions",
+      "description": "Write your first JavaScript function.",
+      "unit": "Basics",
+      "order": 2,
+      "difficulty": "beginner",
+      "xpReward": 25,
+      "prerequisites": ["js-basics-1"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Create a Function",
+          "description": "Make a function that returns 42",
+          "instructions": "Write a function answer() that returns 42.",
+          "starterCode": "",
+          "expectedOutput": "function answer() { return 42; }",
+          "hints": ["function answer() { return 42; }"],
+          "xpReward": 10
+        }
+      ]
+    },
+    {
+      "id": "js-basics-3",
+      "language": "javascript",
+      "title": "Arrays & Loops",
+      "description": "Work with arrays and for loops.",
+      "unit": "Basics",
+      "order": 3,
+      "difficulty": "intermediate",
+      "xpReward": 30,
+      "prerequisites": ["js-basics-2"],
+      "challenges": [
+        {
+          "id": "c1",
+          "type": "code",
+          "title": "Create an Array",
+          "description": "Make an array of fruits",
+          "instructions": "Create an array called fruits with \"apple\" and \"banana\".",
+          "starterCode": "",
+          "expectedOutput": "let fruits = [\"apple\", \"banana\"];",
+          "hints": ["Use square brackets []"],
+          "xpReward": 10
+        }
+      ]
+    }
+  ]
+}

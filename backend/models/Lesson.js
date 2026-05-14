@@ -19,6 +19,8 @@ const lessonSchema = new mongoose.Schema({
   description: String,
   order: { type: Number, default: 0 },
   unit: { type: String, default: 'Basics' },
+  courseId: { type: String, required: true },
+  difficulty: { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'beginner' },
   challenges: [challengeSchema],
   xpReward: { type: Number, default: 20 },
   prerequisites: [{ type: String }]
