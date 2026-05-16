@@ -8,6 +8,7 @@ import {
   Home,
   ShieldCheck,
   ShoppingBag,
+  Sparkles,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -17,14 +18,22 @@ export default function Navbar() {
   if (!user) return null;
 
   return (
-    <nav className="bg-surface border-b border-border sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-primary font-bold text-xl"
-        >
-          <Code2 size={28} />
-          Coddy
+    <nav className="sticky top-0 z-50 border-b border-border bg-surface/92 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+        <Link to="/" className="group flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#58cc02_0%,#1cb0f6_100%)] text-white shadow-lg shadow-primary/20 transition-transform group-hover:-rotate-6">
+            <Code2 size={22} />
+          </div>
+          <div className="leading-tight">
+            <div className="flex items-center gap-2 font-black text-lg tracking-tight text-foreground">
+              Coddy
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                <Sparkles size={10} />
+                v0.2
+              </span>
+            </div>
+            <p className="text-xs text-muted">Build the same project chapter by chapter</p>
+          </div>
         </Link>
 
         <div className="flex items-center gap-1">

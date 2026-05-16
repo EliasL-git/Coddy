@@ -1,0 +1,16 @@
+{
+  "id": "02-css-styling",
+  "title": "Part 2: CSS",
+  "summary": "Style your portfolio: colors, typography, layout and responsive design.",
+  "learningGoals": ["colors", "typography", "spacing", "flexbox", "layouts", "hover effects"],
+  "restrictions": { "noJs": true },
+  "content": "# CSS Styling: Making Your Portfolio Look Sharp\n\nCSS controls the presentation of your site. It turns plain HTML into a polished experience with spacing, color, layout, and motion.\n\n## What To Focus On\n\n### Visual Hierarchy\nUse font sizes, weight, and spacing to make the most important content stand out first.\n\n### Color System\n- Pick 1 primary color for actions and accents\n- Pick 1 or 2 neutral backgrounds\n- Keep contrast strong enough for readability\n\n### Layout Basics\n- Use Flexbox for rows, navbars, and card groups\n- Use Grid when you need a structured page layout\n- Keep spacing consistent with a small scale\n\n### Responsive Design\nYour layout should still feel clean on phones, tablets, and desktop screens. Use media queries to adjust columns, spacing, and navigation.\n\n## Your Task\nStyle the portfolio HTML so it feels modern and readable. Add spacing, typography, button states, and a responsive layout for the navbar and project cards.",
+  "tasks": [
+    { "id": "t1", "title": "Style navbar", "instructions": "Style the navbar and make it responsive." },
+    { "id": "t2", "title": "Project cards", "instructions": "Implement a clean card layout for projects using Flexbox." },
+    { "id": "t3", "title": "Buttons", "instructions": "Add consistent button styles and hover effects." }
+  ],
+  "starterFiles": ["index.html", "style.css"],
+  "expectedFiles": ["index.html", "style.css"],
+  "hints": ["Use CSS variables for colors and maintain a consistent spacing scale."]
+}

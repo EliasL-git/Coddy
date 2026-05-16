@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
-import { ChevronRight, Lock, CheckCircle2, Circle } from "lucide-react";
 
 export default function Language() {
-  const { lang } = useParams();
+  const { lang: courseId } = useParams();
   const { user } = useAuth();
   const [lessons, setLessons] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -15,154 +14,132 @@ export default function Language() {
     async function load() {
       try {
         const [lessonsData, coursesData] = await Promise.all([
-          api.lessons.list(lang),
-          api.lessons.getCourses(lang),
+          api.lessons.list(),
+          api.lessons.getCourses(),
         ]);
-        setLessons(lessonsData.sort((a, b) => a.order - b.order));
+        setLessons(lessonsData.sort((a, b) => (a.order || 0) - (b.order || 0)));
         setCourses(coursesData);
       } catch {
-        // silent
+        // keep the page usable even if the API call fails
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [lang]);
+  }, [courseId]);
 
   const completedSet = new Set(user?.completedLessons || []);
+
+  const selectedCourse = useMemo(() => {
+    return (
+      courses.find((course) => course.id === courseId) ||
+      courses.find((course) => course.lessons?.some((lesson) => lesson.language === courseId)) ||
+      null
+    );
+  }, [courses, courseId]);
+
+  const courseLessons = useMemo(() => {
+    if (!selectedCourse) {
+      return lessons.filter((lesson) => lesson.language === courseId || lesson.courseId === courseId);
+    }
+    return lessons
+      .filter((lesson) => lesson.courseId === selectedCourse.id)
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [lessons, selectedCourse, courseId]);
+
+  const isLegacyLanguageMode = !selectedCourse;
 
   function isUnlocked(lesson, idx) {
     if (idx === 0) return true;
     const prereqs = lesson.prerequisites || [];
     if (!prereqs.length) return true;
-    return prereqs.every((p) => completedSet.has(p));
+    return prereqs.every((prerequisite) => completedSet.has(prerequisite));
   }
 
-  const langLabel =
-    lang === "html" ? "HTML" : lang === "css" ? "CSS" : "JavaScript";
+  const chapterDone = courseLessons.filter((lesson) => completedSet.has(lesson.id)).length;
+  const chapterTotal = courseLessons.length;
+  const chapterProgress = chapterTotal ? Math.round((chapterDone / chapterTotal) * 100) : 0;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6">
-      <div className="mb-6">
-        <Link to="/" className="text-sm text-muted hover:text-foreground">
-          ← Back to Dashboard
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8 space-y-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <Link to="/" className="text-sm font-semibold text-muted hover:text-foreground transition-colors">
+          ← Back
         </Link>
-        <h1 className="text-2xl font-extrabold mt-2">{langLabel} Lessons</h1>
       </div>
 
       {loading ? (
-        <p className="text-muted">Loading lessons...</p>
+        <p className="text-muted">Loading project…</p>
       ) : (
         <>
-          {courses.map(
-            (course) =>
-              course.introduction && (
-                <div
-                  key={course.id}
-                  className="mb-8 bg-surface rounded-3xl border border-border p-6 shadow-sm"
-                >
-                  <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
-                    <span className="text-2xl">{course.icon}</span>
-                    {course.introduction.title}
-                  </h2>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-                    {course.introduction.description}
-                  </p>
+          <section className="rounded-[2rem] border border-border bg-surface p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+            <div className="mb-6">
+              <h1 className="text-3xl font-black tracking-tight text-black">
+                {selectedCourse?.title || `${courseId} track`}
+              </h1>
+              <p className="mt-2 text-sm text-black">
+                {selectedCourse?.description || "Keep the same project open and improve it chapter by chapter."}
+              </p>
+            </div>
 
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted mb-3">
-                        What you'll learn
-                      </h3>
-                      <ul className="space-y-2">
-                        {course.introduction.whatYouWillLearn?.map(
-                          (item, i) => (
-                            <li
-                              key={i}
-                              className="flex items-start gap-2 text-sm text-gray-300"
-                            >
-                              <CheckCircle2
-                                size={16}
-                                className="text-primary mt-0.5 shrink-0"
-                              />
-                              {item}
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
+            <div className="grid gap-3 grid-cols-3 mb-6">
+              <div className="rounded-2xl border border-border bg-background p-3 text-center">
+                <div className="font-black text-lg">{chapterTotal}</div>
+                <div className="text-xs text-muted">Chapters</div>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-3 text-center">
+                <div className="font-black text-lg">{chapterProgress}%</div>
+                <div className="text-xs text-muted">Done</div>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-3 text-center">
+                <div className="font-black text-lg">{chapterDone}/{chapterTotal}</div>
+                <div className="text-xs text-muted">Chapters</div>
+              </div>
+            </div>
 
-                    <div>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted mb-3">
-                        Examples
-                      </h3>
-                      <div className="space-y-3">
-                        {course.introduction.examples?.map((ex, i) => (
-                          <div
-                            key={i}
-                            className="bg-background rounded-xl p-3 border border-border"
-                          >
-                            <p className="text-xs font-bold text-primary mb-1">
-                              {ex.title}
-                            </p>
-                            <code className="block bg-black/30 p-2 rounded text-[11px] font-mono text-gray-300 mb-1 overflow-x-auto">
-                              {ex.code}
-                            </code>
-                            <p className="text-[10px] text-muted">
-                              {ex.explanation}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ),
-          )}
+            <div className="h-2 overflow-hidden rounded-full bg-white">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#58cc02_0%,#1cb0f6_100%)] transition-all"
+                style={{ width: `${chapterProgress}%` }}
+              />
+            </div>
+          </section>
 
-          <div className="space-y-3">
-            {lessons.map((lesson, idx) => {
-              const done = completedSet.has(lesson.id);
-              const unlocked = isUnlocked(lesson, idx);
-              return (
-                <div
-                  key={lesson.id}
-                  className={`bg-surface rounded-2xl border p-4 flex items-center justify-between ${
-                    unlocked ? "border-border" : "border-border opacity-60"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-background border border-border">
-                      {done ? (
-                        <CheckCircle2 className="text-primary" size={20} />
-                      ) : unlocked ? (
-                        <Circle className="text-muted" size={20} />
-                      ) : (
-                        <Lock className="text-muted" size={18} />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">{lesson.title}</p>
-                      <p className="text-muted text-xs">{lesson.description}</p>
-                    </div>
-                  </div>
-                  {unlocked ? (
-                    <Link
-                      to={`/lesson/${lesson.id}`}
-                      className="flex items-center gap-1 bg-primary hover:bg-primary-dark text-white text-sm font-bold px-4 py-2 rounded-xl transition-colors"
-                    >
-                      {done ? "Review" : "Start"}
-                      <ChevronRight size={16} />
-                    </Link>
-                  ) : (
-                    <span className="text-xs text-muted font-medium px-3 py-2">
-                      Locked
+          <section className="rounded-[2rem] border border-border bg-surface p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+            <h2 className="font-black text-lg mb-4">Chapters</h2>
+
+            <div className="space-y-2">
+              {courseLessons.map((lesson, idx) => {
+                const done = completedSet.has(lesson.id);
+                const unlocked = isUnlocked(lesson, idx);
+
+                return (
+                  <Link
+                    key={lesson.id}
+                    to={`/lesson/${lesson.id}`}
+                    className={`rounded-2xl border p-3 flex items-center justify-between transition-colors ${unlocked ? "border-border bg-background hover:border-primary/30" : "border-border bg-background/70 opacity-70 cursor-not-allowed"}`}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className={`text-sm font-bold ${done ? "text-green-600" : "text-black"}`}>
+                      {done ? "✓" : idx + 1}
                     </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-black">{lesson.title}</h3>
+                      <p className="text-xs text-black truncate">{lesson.description}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-black ml-2 shrink-0">
+                      {lesson.language}
+                    </span>
+                  </Link>
+                );
+              })}
+
+              {!courseLessons.length && !isLegacyLanguageMode && (
+                <p className="text-sm text-muted">No chapters found for this project.</p>
+              )}
+            </div>
+          </section>
         </>
       )}
     </div>

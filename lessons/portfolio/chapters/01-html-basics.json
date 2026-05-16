@@ -1,0 +1,39 @@
+{
+  "id": "01-html-basics",
+  "title": "Part 1: HTML",
+  "summary": "Create the website structure with semantic HTML. Build the foundation of your portfolio.",
+  "learningGoals": ["semantic HTML", "headings", "paragraphs", "images", "forms", "links"],
+  "restrictions": { "noCss": true, "noJs": true },
+  "content": "# HTML Basics: Building Your Website's Foundation\n\nHTML (HyperText Markup Language) is the skeleton of your website. It defines the structure and meaning of content using **semantic tags**.\n\n## Why Semantic HTML?\nSemantic tags like `<header>`, `<nav>`, `<main>`, `<section>`, and `<footer>` tell both browsers and developers what each part of your page is for. That makes your site more accessible, easier to maintain, and better for SEO.\n\n## Key Concepts\n\n### Document Structure\nEvery HTML document should have:\n- `<html>` - The root element\n- `<head>` - Metadata, title, and styles\n- `<body>` - All visible content\n\n### Common Semantic Tags\n- `<header>` - Top section with the logo or title\n- `<nav>` - Navigation menu\n- `<main>` - Primary content\n- `<section>` - A thematic grouping\n- `<article>` - Self-contained content\n- `<aside>` - Sidebar content\n- `<footer>` - Bottom section\n\n### Text Elements\n- `<h1>` to `<h6>` - Headings, with only one `<h1>` per page\n- `<p>` - Paragraphs\n- `<a href=\"#\">` - Links\n- `<img src=\"\" alt=\"\">` - Images\n\n### Forms\n- `<form>` - Container for inputs\n- `<input type=\"text\">` - Text input\n- `<textarea>` - Multi-line input\n- `<button type=\"submit\">` - Submit button\n\n## Your Task\nBuild the HTML structure for your personal website. Include a navbar, about section, projects showcase, and contact form. Don't worry about styling yet. Focus on clean, semantic structure.\n\n## Code Snippets You Can Use\nUse the example blocks below as a reference while you build your page.",
+  "examples": [
+    {
+      "title": "Basic Document Structure",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Portfolio</title>\n</head>\n<body>\n  <header>\n    <h1>Your Name</h1>\n  </header>\n  <main>\n    <!-- Your content goes here -->\n  </main>\n  <footer>\n    <p>&copy; 2024 Your Name</p>\n  </footer>\n</body>\n</html>"
+    },
+    {
+      "title": "Navigation Bar",
+      "code": "<nav>\n  <a href=\"#home\">Home</a>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n  <a href=\"#contact\">Contact</a>\n</nav>"
+    },
+    {
+      "title": "Section with Heading & Text",
+      "code": "<section id=\"about\">\n  <h2>About Me</h2>\n  <p>Hi! I'm a web developer passionate about building cool stuff.</p>\n</section>"
+    },
+    {
+      "title": "Project Cards",
+      "code": "<section id=\"projects\">\n  <h2>My Projects</h2>\n  <article>\n    <h3>Project 1</h3>\n    <p>A cool project I built.</p>\n  </article>\n  <article>\n    <h3>Project 2</h3>\n    <p>Another awesome project.</p>\n  </article>\n</section>"
+    },
+    {
+      "title": "Contact Form",
+      "code": "<section id=\"contact\">\n  <h2>Get In Touch</h2>\n  <form>\n    <input type=\"text\" placeholder=\"Your name\" required>\n    <textarea placeholder=\"Your message\" required></textarea>\n    <button type=\"submit\">Send</button>\n  </form>\n</section>"
+    }
+  ],
+  "tasks": [
+    { "id": "t1", "title": "Create navbar", "instructions": "Add a nav with links to sections." },
+    { "id": "t2", "title": "About section", "instructions": "Create an about section with a heading and paragraph." },
+    { "id": "t3", "title": "Projects section", "instructions": "Add a list of project cards (placeholders are fine)." },
+    { "id": "t4", "title": "Contact form", "instructions": "Add a contact form with name and message inputs." }
+  ],
+  "starterFiles": ["index.html"],
+  "expectedFiles": ["index.html"],
+  "hints": ["Use semantic tags like <header>, <nav>, <main>, <section>, <footer>."]
+}

@@ -52,6 +52,25 @@ router.post("/:id/complete", auth, async (req, res) => {
     const lesson = loadLessons().find((l) => l.id === req.params.id);
     if (!lesson) return res.status(404).json({ message: "Lesson not found" });
 
+    // Enforce course order: use the course definition order (as authored)
+    // to determine earlier lessons. This avoids relying on numeric `order`
+    // fields which may be missing or inconsistent.
+    if (lesson.courseId) {
+      const courses = loadCourses();
+      const course = courses.find((c) => c.id === lesson.courseId);
+      if (course && Array.isArray(course.lessons)) {
+        const lessonIds = course.lessons.map((l) => l.id);
+        const idx = lessonIds.indexOf(lesson.id);
+        if (idx > 0) {
+          const earlierIds = lessonIds.slice(0, idx);
+          const missing = earlierIds.filter((lid) => !user.completedLessons.includes(lid));
+          if (missing.length) {
+            return res.status(403).json({ message: "Complete earlier chapters in the course first." });
+          }
+        }
+      }
+    }
+
     const alreadyCompleted = user.completedLessons.includes(req.params.id);
 
     if (!alreadyCompleted) {

@@ -1,0 +1,16 @@
+{
+  "id": "03-javascript",
+  "title": "Part 3: JavaScript",
+  "summary": "Add interactivity: DOM manipulation, event listeners, and interactive features.",
+  "learningGoals": ["DOM manipulation", "event listeners", "functions", "animations"],
+  "restrictions": {},
+  "content": "# JavaScript Interactivity: Bringing the Portfolio to Life\n\nJavaScript adds behavior to your site. It lets users toggle controls, validate forms, and interact with elements on the page.\n\n## Core Ideas\n\n### DOM Manipulation\nUse JavaScript to find elements, update text, add classes, and respond to user actions.\n\n### Event Listeners\nAttach listeners to buttons, menus, and form controls so the page reacts when people click, type, or submit.\n\n### State and Storage\nSome features should remember user choices, like dark mode or menu visibility. `localStorage` is a simple way to keep that state.\n\n### Progressive Enhancement\nBuild the page so it works without JavaScript first, then layer interactivity on top.\n\n## Your Task\nAdd useful interactivity to the portfolio, such as dark mode, a mobile menu, and contact form validation.",
+  "tasks": [
+    { "id": "t1", "title": "Dark mode", "instructions": "Add a dark mode toggle that persists in localStorage." },
+    { "id": "t2", "title": "Mobile menu", "instructions": "Implement a mobile menu toggle using JS." },
+    { "id": "t3", "title": "Form validation", "instructions": "Validate the contact form before submission." }
+  ],
+  "starterFiles": ["index.html", "style.css", "script.js"],
+  "expectedFiles": ["index.html", "style.css", "script.js"],
+  "hints": ["Keep behavior progressive and avoid over-reliance on frameworks."]
+}

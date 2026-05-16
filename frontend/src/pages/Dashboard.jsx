@@ -1,46 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import {
-  Code2,
-  FileCode2,
-  Braces,
+  BookOpen,
+  Coins,
   Flame,
-  Star,
   Zap,
-  Trophy,
 } from "lucide-react";
 
-const languages = [
-  {
-    key: "html",
-    name: "HTML",
-    color: "text-orange-500",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    icon: FileCode2,
-  },
-  {
-    key: "css",
-    name: "CSS",
-    color: "text-blue-500",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    icon: Code2,
-  },
-  {
-    key: "javascript",
-    name: "JavaScript",
-    color: "text-yellow-500",
-    bg: "bg-yellow-50",
-    border: "border-yellow-200",
-    icon: Braces,
-  },
-];
+function StatCard({ icon: Icon, label, value, tone = "text-foreground" }) {
+  return (
+    <div className="rounded-3xl border border-border bg-surface/90 p-4 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+      <div className={`mb-2 inline-flex rounded-2xl p-2 ${tone}/10`}>
+        <Icon size={18} className={tone} />
+      </div>
+      <div className="text-2xl font-black tracking-tight">{value}</div>
+      <div className="text-sm text-muted">{label}</div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,14 +31,16 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [l, board] = await Promise.all([
+        const [courseData, lessonData, board] = await Promise.all([
+          api.lessons.getCourses(),
           api.lessons.list(),
           api.user.leaderboard(),
         ]);
-        setLessons(l);
+        setCourses(courseData);
+        setLessons(lessonData);
         setLeaderboard(board);
       } catch {
-        // silent
+        // keep the dashboard usable even if ancillary data fails
       } finally {
         setLoading(false);
       }
@@ -64,126 +49,134 @@ export default function Dashboard() {
   }, []);
 
   const completedSet = new Set(user?.completedLessons || []);
+  const completedCourses = new Set(user?.completedCourses || []);
 
-  function progressFor(lang) {
-    const all = lessons.filter((x) => x.language === lang);
-    const done = all.filter((x) => completedSet.has(x.id));
-    return { total: all.length, done: done.length };
-  }
+  const courseCards = useMemo(() => {
+    return courses.map((course) => {
+      const chapterIds = new Set((course.lessons || []).map((lesson) => lesson.id));
+      const completed = lessons.filter(
+        (lesson) => lesson.courseId === course.id && completedSet.has(lesson.id),
+      ).length;
+      const total = chapterIds.size || course.lessons?.length || 0;
+      const progress = total ? Math.round((completed / total) * 100) : 0;
+
+      return { ...course, completed, total, progress };
+    });
+  }, [courses, lessons, completedSet]);
+
+  const totalLessons = lessons.length;
+  const completedLessons = completedSet.size;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
-      <div className="bg-surface rounded-2xl border border-border p-6 mb-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8 space-y-6">
+      <section className="rounded-[2rem] border border-border bg-surface p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+        <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
           <div>
-            <h1 className="text-2xl font-extrabold">
-              Welcome back, {user?.username}! 👋
-            </h1>
-            <p className="text-muted">Ready to keep learning?</p>
+            <h1 className="text-3xl font-black tracking-tight mb-2">Dashboard</h1>
+            <p className="text-muted">Just continue learning</p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 text-orange-500 font-bold">
-              <Flame size={20} />
-              {user?.streak || 0} day streak
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 w-full lg:w-auto">
+            <div className="rounded-2xl border border-border bg-background p-3 text-center">
+              <div className="text-lg font-black text-orange-300">{user?.streak || 0}</div>
+              <div className="text-xs text-muted">Streak</div>
             </div>
-            <div className="flex items-center gap-1.5 text-yellow-500 font-bold">
-              <Zap size={20} />
-              {user?.xp || 0} XP
+            <div className="rounded-2xl border border-border bg-background p-3 text-center">
+              <div className="text-lg font-black text-yellow-300">{user?.xp || 0}</div>
+              <div className="text-xs text-muted">XP</div>
             </div>
-            <div className="flex items-center gap-1.5 text-yellow-600 font-bold">
-              🪙 {user?.coins ?? 0} coins
+            <div className="rounded-2xl border border-border bg-background p-3 text-center">
+              <div className="text-lg font-black text-amber-300">{user?.coins ?? 0}</div>
+              <div className="text-xs text-muted">Coins</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-3 text-center">
+              <div className="text-lg font-black text-cyan-300">{completedLessons}/{totalLessons}</div>
+              <div className="text-xs text-muted">Done</div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <h2 className="text-lg font-bold mb-3">Choose a language</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {languages.map((lang) => {
-          const { total, done } = progressFor(lang.key);
-          const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-          const Icon = lang.icon;
-          const isCourseComplete = user?.completedCourses?.includes(lang.key);
-          return (
-            <Link
-              key={lang.key}
-              to={`/learn/${lang.key}`}
-              className={`${lang.bg} ${lang.border} border rounded-2xl p-5 hover:shadow-md transition-shadow relative`}
-            >
-              {isCourseComplete && (
-                <span className="absolute top-3 right-3 bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                  ✅ Complete
-                </span>
-              )}
-              <div className="flex items-center gap-3 mb-2">
-                <div className={`${lang.color}`}>
-                  <Icon size={28} />
+      {courseCards.length > 0 && (
+        <section className="rounded-[2rem] border border-border bg-surface p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+          <h2 className="text-xl font-black tracking-tight mb-4">Courses</h2>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {courseCards.map((course) => (
+              <Link
+                key={course.id}
+                to={`/learn/${course.id}`}
+                className="flex flex-col justify-between rounded-2xl border border-border bg-background p-4 hover:shadow-md transition-shadow"
+              >
+                <div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">{course.icon || "📚"}</div>
+                    <div>
+                      <div className="font-black">{course.title || course.name}</div>
+                      {course.description && (
+                        <div className="text-sm text-muted mt-1 line-clamp-2">{course.description}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="text-xs text-muted mb-1">Progress</div>
+                    <div className="w-full rounded-xl bg-border h-3 overflow-hidden">
+                      <div
+                        className="h-3 bg-primary"
+                        style={{ width: `${course.progress || 0}%` }}
+                        aria-valuenow={course.progress || 0}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-muted mt-2">
+                      <div>{course.completed}/{course.total} chapters</div>
+                      <div>{course.progress}%</div>
+                    </div>
+                  </div>
                 </div>
-                <span className="text-lg font-bold">{lang.name}</span>
-              </div>
-              <p className="text-sm text-muted mb-3">
-                {done}/{total} lessons completed
-              </p>
-              <div className="w-full bg-white rounded-full h-2.5">
-                <div
-                  className={`h-2.5 rounded-full ${lang.color.replace("text-", "bg-")}`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </Link>
-          );
-        })}
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-surface rounded-2xl border border-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="text-yellow-500" size={20} />
-            <h3 className="font-bold">Recent Achievements</h3>
+                <div className="mt-4 text-right text-xs text-muted">Start</div>
+              </Link>
+            ))}
           </div>
+        </section>
+      )}
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-border bg-surface p-6">
+          <h3 className="font-black text-lg mb-4">Achievements</h3>
           {user?.achievements?.length ? (
             <div className="flex flex-wrap gap-2">
-              {user.achievements.slice(-6).map((a) => (
-                <div
-                  key={a.id}
-                  className="bg-background rounded-xl px-3 py-2 text-sm border border-border"
-                >
-                  <span className="mr-1">{a.icon}</span>
-                  <span className="font-semibold">{a.name}</span>
+              {user.achievements.slice(-8).map((achievement) => (
+                <div key={achievement.id} className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2 py-1 text-xs">
+                  <span>{achievement.icon}</span>
+                  <span>{achievement.name}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-muted text-sm">
-              Complete lessons to earn achievements!
-            </p>
+            <p className="text-sm text-muted">Complete chapters to earn achievements.</p>
           )}
         </div>
 
-        <div className="bg-surface rounded-2xl border border-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Trophy className="text-secondary" size={20} />
-            <h3 className="font-bold">Leaderboard</h3>
-          </div>
+        <div className="rounded-[2rem] border border-border bg-surface p-6">
+          <h3 className="font-black text-lg mb-4">Leaderboard</h3>
           {loading ? (
-            <p className="text-muted text-sm">Loading...</p>
-          ) : (
+            <p className="text-sm text-muted">Loading...</p>
+          ) : leaderboard.length ? (
             <ul className="space-y-2">
-              {leaderboard.slice(0, 5).map((u, i) => (
-                <li
-                  key={u._id}
-                  className="flex items-center justify-between text-sm"
-                >
-                  <span className="font-medium">
-                    #{i + 1} {u.username}
-                  </span>
-                  <span className="text-muted">{u.xp} XP</span>
+              {leaderboard.slice(0, 5).map((entry, index) => (
+                <li key={entry._id} className="flex items-center justify-between text-sm">
+                  <span className="font-semibold">#{index + 1} {entry.username}</span>
+                  <span className="text-muted">{entry.xp} XP</span>
                 </li>
               ))}
             </ul>
+          ) : (
+            <p className="text-sm text-muted">No users yet.</p>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

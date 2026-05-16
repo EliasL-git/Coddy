@@ -8,10 +8,11 @@
   --color-wrong: #ff4b4b;
   --color-wrong-light: #ffc9c9;
   --color-surface: #ffffff;
-  --color-background: #f7f7f7;
-  --color-border: #e5e5e5;
-  --color-muted: #a0a0a0;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-background: #f3efe8;
+  --color-border: #dfd7ca;
+  --color-muted: #667085;
+  --color-foreground: #102033;
+  --font-sans: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
 }
 
 html, body, #root {
@@ -20,5 +21,14 @@ html, body, #root {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-background);
+  background:
+    radial-gradient(circle at top left, rgba(88, 204, 2, 0.1), transparent 30%),
+    radial-gradient(circle at top right, rgba(28, 176, 246, 0.12), transparent 28%),
+    linear-gradient(180deg, #f8f4ed 0%, var(--color-background) 100%);
+  color: var(--color-foreground);
+}
+
+::selection {
+  background: rgba(88, 204, 2, 0.2);
+  color: var(--color-foreground);
 }

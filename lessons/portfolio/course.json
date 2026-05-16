@@ -1,0 +1,11 @@
+{
+  "id": "portfolio-website",
+  "title": "Portfolio",
+  "description": "Build a personal portfolio website. Start with HTML structure, add CSS styling, then JavaScript interactivity.",
+  "version": "0.2",
+  "chapters": [
+    "chapters/01-html-basics.json",
+    "chapters/02-css-styling.json",
+    "chapters/03-javascript.json"
+  ]
+}

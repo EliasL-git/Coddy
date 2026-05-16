@@ -1,0 +1,14 @@
+{
+  "id": "04-deployment",
+  "title": "Deployment",
+  "summary": "Publish the project and learn hosting basics, Git, and production workflows.",
+  "learningGoals": ["hosting", "Git basics", "production workflow"],
+  "content": "# Deployment: Shipping Your Portfolio\n\nDeployment is the final step where your project becomes publicly available. A clean deployment helps you share your work and verify that the site behaves the same in production.\n\n## What To Prepare\n\n### Production Build\nMake sure your app can be built and served reliably without local development tools.\n\n### Hosting Options\nCommon choices include:\n- GitHub Pages\n- Netlify\n- Vercel\n- A Docker-based host\n\n### Final Checks\n- Verify links, images, and forms\n- Confirm the site works on mobile and desktop\n- Update your README with clear setup and deployment steps\n\n## Your Task\nPrepare the portfolio for deployment and publish it using a static host or container workflow.",
+  "tasks": [
+    { "id": "t1", "title": "Prepare for production", "instructions": "Add a production-ready build and README with deployment steps." },
+    { "id": "t2", "title": "Deploy", "instructions": "Deploy to a static host (GitHub Pages, Netlify, Vercel) or Docker container." }
+  ],
+  "starterFiles": ["index.html", "style.css", "script.js"],
+  "expectedFiles": ["index.html", "style.css", "script.js"],
+  "hints": ["Create a minimal CI/CD pipeline or deploy using a one-click provider."]
+}
