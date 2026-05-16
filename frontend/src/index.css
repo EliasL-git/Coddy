@@ -1,34 +1,150 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #58cc02;
-  --color-primary-dark: #43a000;
-  --color-secondary: #1cb0f6;
-  --color-secondary-dark: #0a96db;
-  --color-wrong: #ff4b4b;
-  --color-wrong-light: #ffc9c9;
-  --color-surface: #ffffff;
-  --color-background: #f3efe8;
-  --color-border: #dfd7ca;
-  --color-muted: #667085;
-  --color-foreground: #102033;
-  --font-sans: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+  /* Professional color palette - inspired by modern learning platforms */
+  --color-primary: #2563eb;           /* Royal blue - trust, authority */
+  --color-primary-light: #3b82f6;     /* Lighter primary */
+  --color-primary-dark: #1d4ed8;      /* Darker primary */
+  --color-secondary: #059669;         /* Emerald green - success, growth */
+  --color-secondary-light: #10b981;
+  --color-accent: #7c3aed;            /* Violet - highlights */
+  --color-warning: #f59e0b;           /* Amber - attention */
+  --color-error: #ef4444;             /* Red - errors */
+
+  /* Neutral scale */
+  --color-surface: #ffffff;           /* Card backgrounds */
+  --color-surface-hover: #f8fafc;     /* Hover states */
+  --color-background: #f1f5f9;        /* Page background */
+  --color-border: #e2e8f0;            /* Borders */
+  --color-border-dark: #cbd5e1;
+  
+  /* Text colors */
+  --color-foreground: #0f172a;        /* Primary text */
+  --color-foreground-light: #334155;  /* Secondary text */
+  --color-muted: #64748b;             /* Muted text */
+  --color-muted-light: #94a3b8;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  --gradient-success: linear-gradient(135deg, var(--color-secondary) 0%, #34d399 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-primary: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+  --shadow-success: 0 4px 14px 0 rgba(5, 150, 105, 0.3);
+
+  /* Border radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Font family */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
+/* Base styles */
 html, body, #root {
   height: 100%;
 }
 
 body {
   font-family: var(--font-sans);
-  background:
-    radial-gradient(circle at top left, rgba(88, 204, 2, 0.1), transparent 30%),
-    radial-gradient(circle at top right, rgba(28, 176, 246, 0.12), transparent 28%),
-    linear-gradient(180deg, #f8f4ed 0%, var(--color-background) 100%);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(37, 99, 235, 0.2);
   color: var(--color-foreground);
 }
 
-::selection {
-  background: rgba(88, 204, 2, 0.2);
-  color: var(--color-foreground);
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-dark);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-surface: #0f172a;
+    --color-surface-hover: #1e293b;
+    --color-background: #020617;
+    --color-border: #1e293b;
+    --color-border-dark: #334155;
+    --color-foreground: #f1f5f9;
+    --color-foreground-light: #cbd5e1;
+    --color-muted: #94a3b8;
+    --color-muted-light: #cbd5e1;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+    --shadow-primary: 0 4px 14px 0 rgba(59, 130, 246, 0.4);
+    --shadow-success: 0 4px 14px 0 rgba(16, 185, 129, 0.4);
+  }
+}
+
+/* Utility classes for dark mode toggle */
+.dark,
+.light {
+  color-scheme: var(--color-scheme, dark);
+}
+
+/* Transitions for theme switching */
+body,
+.bg-surface,
+.bg-background,
+.text-foreground,
+.text-muted,
+.border-border {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark mode overrides when .dark class is present */
+.dark {
+  --color-surface: #0f172a;
+  --color-surface-hover: #1e293b;
+  --color-background: #020617;
+  --color-border: #1e293b;
+  --color-border-dark: #334155;
+  --color-foreground: #f1f5f9;
+  --color-foreground-light: #cbd5e1;
+  --color-muted: #94a3b8;
+  --color-muted-light: #cbd5e1;
+  color-scheme: dark;
 }

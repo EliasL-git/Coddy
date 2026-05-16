@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { MessageCircle, Send, X } from "lucide-react";
-import bitsyDefault from "../assets/Bitsy_default.png";
-import "./BitsyChat.css";
+import { Bot, Send, X } from "lucide-react";
 
 function normalize(text) {
   return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -88,7 +86,7 @@ function analyzeCode(code, language) {
 
   if (lang === "css" || code.includes("{")) {
     const badSelectors = invalidCssSelectors(code);
-    if (badSelectors.length) issues.push(`Potential invalid selector(s) on line(s) ${badSelectors.map((b) => b.line).join(", ")}: \`${badSelectors.map((b) => b.sel).join("`, `")}\`. Avoid spaces between a dot/hash and the name.`);
+    if (badSelectors.length) issues.push(`Potential invalid selector(s) on line(s) ${badSelectors.map((b) => b.line).join(", ")}: \`${badSelectors.map((b) => b.sel).join("\`, \`")}\`. Avoid spaces between a dot/hash and the name.`);
     if (code.split("}").length < code.split("{").length) issues.push("Looks like there may be more opening `{` than closing `}` braces.");
   }
 
@@ -108,7 +106,6 @@ function analyzeCode(code, language) {
   };
 }
 
-/* ───── Reply builder (with code awareness) ───── */
 function buildReply(question, lesson, challenge, code, language) {
   const q = normalize(question);
   const lessonTitle = lesson?.title || "this lesson";
@@ -129,11 +126,7 @@ function buildReply(question, lesson, challenge, code, language) {
 
   if (q.includes("navbar") || q.includes("nav")) {
     const example = pickExample(lesson, "navigation bar");
-    return `Use a semantic \`<nav>\` element near the top of the page, usually inside \`<header>\`, then add links to each section.
-
-${example?.code ? `\`\`\`html\n${example.code}\n\`\`\`` : "```html\n<nav>\n  <a href=\"#home\">Home</a>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n  <a href=\"#contact\">Contact</a>\n</nav>"}
-
-For ${lessonTitle}, that is the cleanest starting point. If you are on the HTML lesson, place it before \`<main>\`.`;
+    return `Use a semantic \`<nav>\` element near the top of the page, usually inside \`<header>\`, then add links to each section.\n\n${example?.code ? `\`\`\`html\n${example.code}\n\`\`\`` : "\`\`\`html\n<nav>\n  <a href=\"#home\">Home</a>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n  <a href=\"#contact\">Contact</a>\n</nav>\`\`\`"}\n\nFor ${lessonTitle}, that is the cleanest starting point. If you are on the HTML lesson, place it before \`<main>\`.`;
   }
 
   if (q.includes("about")) {
@@ -188,7 +181,7 @@ export default function BitsyChat({ lesson, challenge, code, language }) {
     setPrompt("");
     setIsThinking(true);
 
-    window.setTimeout(() => {
+    setTimeout(() => {
       setMessages((current) => [
         ...current,
         {
@@ -206,110 +199,108 @@ export default function BitsyChat({ lesson, challenge, code, language }) {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="bitsy-trigger"
+          className="inline-flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-sm font-medium transition-colors"
           aria-label="Open Bitsy chat"
         >
-          <span className="bitsy-trigger-avatar">
-            <img src={bitsyDefault} alt="Bitsy" />
-          </span>
-          <span className="bitsy-trigger-text">
-            <span className="bitsy-name">Bitsy</span>
-            <span className="bitsy-hint">Ask me how to build this page</span>
-          </span>
-          <span className="bitsy-trigger-icon">
-            <MessageCircle size={15} />
-          </span>
+          <Bot size={18} />
+          <span>Ask Bitsy</span>
         </button>
       ) : (
-        <div className="bitsy-chat-card">
-          <div className="bitsy-chat-header">
-            <div className="bitsy-header-avatar">
-              <img src={bitsyDefault} alt="Bitsy avatar" />
+        <div className="flex flex-col max-h-96 rounded-xl border border-border bg-surface shadow-lg overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-surface-hover">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Bot size={18} />
             </div>
-            <div className="bitsy-header-info">
-              <p className="bitsy-header-name">Bitsy</p>
-              <p className="bitsy-header-subtitle">
-                Your coding buddy is here to talk through the lesson.
-              </p>
+            <div>
+              <p className="font-semibold text-foreground text-sm">Bitsy</p>
+              <p className="text-xs text-muted">Your coding assistant</p>
             </div>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="bitsy-close-btn"
-              aria-label="Close Bitsy chat"
+              className="ml-auto p-1 hover:bg-surface-hover rounded text-muted"
+              aria-label="Close chat"
             >
               <X size={16} />
             </button>
           </div>
 
-          <div className="bitsy-messages">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
-                className={`bitsy-message-row ${message.role}`}
+                className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
               >
                 {message.role === "bitsy" && (
-                  <div className="bitsy-message-avatar">
-                    <img src={bitsyDefault} alt="Bitsy" />
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Bot size={14} />
                   </div>
                 )}
-
-                <div className={`bitsy-message-bubble ${message.role}`}>
+                <div
+                  className={`max-w-[80%] rounded-lg px-4 py-2 text-sm ${
+                    message.role === "user"
+                      ? "bg-primary text-white"
+                      : "bg-surface border border-border text-foreground"
+                  }`}
+                >
                   {message.role === "user" ? (
-                    <p className="bitsy-message-text">{message.text}</p>
+                    <p className="leading-relaxed">{message.text}</p>
                   ) : (
                     <div
-                      className="bitsy-message-markdown"
-                      dangerouslySetInnerHTML={{
-                        __html: renderMarkdown(message.text),
-                      }}
+                      className="text-sm leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(message.text) }}
                     />
                   )}
                 </div>
               </div>
             ))}
-
             {isThinking && (
-              <div className="bitsy-message-row bitsy">
-                <div className="bitsy-message-avatar">
-                  <img src={bitsyDefault} alt="Bitsy" />
+              <div className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Bot size={14} />
                 </div>
-                <div className="bitsy-thinking">Bitsy is thinking...</div>
+                <div className="px-4 py-2 rounded-lg bg-surface border border-border text-muted text-sm">
+                  Bitsy is thinking...
+                </div>
               </div>
             )}
           </div>
 
-          <div className="bitsy-footer">
+          {/* Footer */}
+          <div className="p-4 border-t border-border bg-surface">
             <form
-              className="bitsy-form"
-              onSubmit={(event) => {
-                event.preventDefault();
+              className="flex gap-2 mb-3"
+              onSubmit={(e) => {
+                e.preventDefault();
                 sendPrompt(prompt);
               }}
             >
               <input
                 value={prompt}
-                onChange={(event) => setPrompt(event.target.value)}
+                onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Ask Bitsy something..."
-                className="bitsy-input"
+                className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                disabled={isThinking}
               />
               <button
                 type="submit"
                 disabled={!prompt.trim() || isThinking}
-                className="bitsy-send-btn"
+                className="inline-flex items-center gap-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send size={14} />
                 Ask
               </button>
             </form>
 
-            <div className="bitsy-quick-pills">
+            <div className="flex flex-wrap gap-2">
               {quickPrompts.map((item) => (
                 <button
                   key={item}
                   type="button"
                   onClick={() => sendPrompt(item)}
-                  className="bitsy-pill"
+                  className="px-3 py-1 text-xs rounded-full border border-border bg-surface-hover hover:bg-surface text-muted transition-colors"
                 >
                   {item}
                 </button>
