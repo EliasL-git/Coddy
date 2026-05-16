@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
+import type { Course } from "../types";
 import {
   BookOpen,
   Flame,
@@ -45,13 +46,23 @@ function StatCard({ icon: Icon, label, value, color = "primary", trend }) {
   );
 }
 
-function CourseCard({ course, progress, completed, total }) {
+function CourseCard({
+  course,
+  progress,
+  completed,
+  total,
+}: {
+  course: Course;
+  progress: number;
+  completed: number;
+  total: number;
+}) {
   const progressPercent = total ? Math.round((completed / total) * 100) : 0;
-  
+
   // Determine status badge
   const isCompleted = progressPercent === 100;
   const isInProgress = progressPercent > 0 && progressPercent < 100;
-  
+
   return (
     <Link
       to={`/learn/${course.id}`}
@@ -88,7 +99,7 @@ function CourseCard({ course, progress, completed, total }) {
               {completed}/{total} lessons
             </span>
           </div>
-          
+
           {/* Progress bar */}
           <div className="h-2 w-full overflow-hidden rounded-full bg-border">
             <div
@@ -100,7 +111,7 @@ function CourseCard({ course, progress, completed, total }) {
               aria-valuemax={100}
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted">
               {isCompleted
@@ -168,7 +179,7 @@ function LeaderboardEntry({ entry, index }) {
     return <span className="text-sm font-bold text-muted">#{idx + 1}</span>;
   };
 
-  const isCurrentUser = entry._id === entry.userId; // assuming userId matches current user
+  const isCurrentUser = entry._id === entry.userId;
 
   return (
     <div
@@ -179,7 +190,11 @@ function LeaderboardEntry({ entry, index }) {
       <div className="flex items-center gap-3">
         <div className="w-6 text-center">{getRankIcon(index)}</div>
         <div>
-          <p className={`text-sm font-medium ${isCurrentUser ? "text-primary" : "text-foreground"}`}>
+          <p
+            className={`text-sm font-medium ${
+              isCurrentUser ? "text-primary" : "text-foreground"
+            }`}
+          >
             {entry.username}
             {isCurrentUser && (
               <span className="ml-2 text-xs text-primary">(you)</span>
@@ -197,9 +212,9 @@ function LeaderboardEntry({ entry, index }) {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [courses, setCourses] = useState([]);
-  const [lessons, setLessons] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [lessons, setLessons] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

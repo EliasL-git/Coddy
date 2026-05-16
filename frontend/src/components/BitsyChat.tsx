@@ -2,27 +2,28 @@ import { useMemo, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { Bot, Send, X } from "lucide-react";
+import type { Lesson, Task } from "../types";
 
-function normalize(text) {
+function normalize(text: string) {
   return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
-function renderMarkdown(text) {
+function renderMarkdown(text: string) {
   return DOMPurify.sanitize(marked.parse(text || ""));
 }
 
-function pickExample(lesson, titleMatch) {
+function pickExample(lesson: Lesson | null, titleMatch: string) {
   return lesson?.examples?.find((example) =>
     example.title?.toLowerCase().includes(titleMatch)
   );
 }
 
-/* ───── Code analysis helpers ───── */
-function getUnclosedTags(html) {
+/* Code analysis helpers */
+function getUnclosedTags(html: string) {
   const open = html.match(/<([a-z][a-z0-9]*)\b[^>]*>/gi) || [];
   const close = html.match(/<\/([a-z][a-z0-9]*)>/gi) || [];
   const needClosing = ["div", "span", "p", "section", "article", "header", "footer", "nav", "main", "ul", "ol", "li", "form", "table", "tr", "td", "th", "body", "html"];
-  const counts = {};
+  const counts: Record<string, number> = {};
   open.forEach((tag) => {
     const name = tag.match(/<([a-z][a-z0-9]*)\b/i)?.[1].toLowerCase();
     if (name && needClosing.includes(name)) counts[name] = (counts[name] || 0) + 1;
@@ -34,9 +35,9 @@ function getUnclosedTags(html) {
   return Object.entries(counts).filter(([, diff]) => diff !== 0).map(([tag]) => tag);
 }
 
-function missingSemicolons(js) {
+function missingSemicolons(js: string) {
   const lines = js.split("\n");
-  const offenders = [];
+  const offenders: number[] = [];
   lines.forEach((line, idx) => {
     const trimmed = line.trim();
     if (
@@ -54,8 +55,8 @@ function missingSemicolons(js) {
   return offenders;
 }
 
-function invalidCssSelectors(css) {
-  const bad = [];
+function invalidCssSelectors(css: string) {
+  const bad: Array<{ line: number; sel: string }> = [];
   const lines = css.split("\n");
   lines.forEach((line, idx) => {
     const raw = line.trim();
@@ -71,11 +72,11 @@ function invalidCssSelectors(css) {
   return bad;
 }
 
-function analyzeCode(code, language) {
+function analyzeCode(code: string, language: string) {
   if (!code || code.trim().length < 3) return null;
 
   const lang = normalize(language);
-  let issues = [];
+  let issues: string[] = [];
   const snippet = code.length > 400 ? code.slice(0, 400) + "\n..." : code;
 
   if (lang === "html" || code.trim().startsWith("<")) {
@@ -86,7 +87,7 @@ function analyzeCode(code, language) {
 
   if (lang === "css" || code.includes("{")) {
     const badSelectors = invalidCssSelectors(code);
-    if (badSelectors.length) issues.push(`Potential invalid selector(s) on line(s) ${badSelectors.map((b) => b.line).join(", ")}: \`${badSelectors.map((b) => b.sel).join("\`, \`")}\`. Avoid spaces between a dot/hash and the name.`);
+    if (badSelectors.length) issues.push(`Potential invalid selector(s) on line(s) ${badSelectors.map((b) => b.line).join(", ")}: \`${badSelectors.map((b) => b.sel).join("`, `")}\`. Avoid spaces between a dot/hash and the name.`);
     if (code.split("}").length < code.split("{").length) issues.push("Looks like there may be more opening `{` than closing `}` braces.");
   }
 
@@ -106,7 +107,7 @@ function analyzeCode(code, language) {
   };
 }
 
-function buildReply(question, lesson, challenge, code, language) {
+function buildReply(question: string, lesson: Lesson | null, challenge: Task | null, code: string, language: string) {
   const q = normalize(question);
   const lessonTitle = lesson?.title || "this lesson";
   const lessonLanguage = lesson?.language || language || "html";
@@ -126,7 +127,7 @@ function buildReply(question, lesson, challenge, code, language) {
 
   if (q.includes("navbar") || q.includes("nav")) {
     const example = pickExample(lesson, "navigation bar");
-    return `Use a semantic \`<nav>\` element near the top of the page, usually inside \`<header>\`, then add links to each section.\n\n${example?.code ? `\`\`\`html\n${example.code}\n\`\`\`` : "\`\`\`html\n<nav>\n  <a href=\"#home\">Home</a>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n  <a href=\"#contact\">Contact</a>\n</nav>\`\`\`"}\n\nFor ${lessonTitle}, that is the cleanest starting point. If you are on the HTML lesson, place it before \`<main>\`.`;
+    return `Use a semantic \`<nav>\` element near the top of the page, usually inside \`<header>\`, then add links to each section.\n\n${example?.code ? `\`\`\`html\n${example.code}\n\`\`\`` : "\`\`\`html\n<nav>\n  <a href=\"#home\">Home</a>\n  <a href=\"#about\">About</a>\n  <a href=\"#projects\">Projects</a>\n  <a href=\"#contact\">Contact</a>\n</nav>\n\`\`\`"}\n\nFor ${lessonTitle}, that is the cleanest starting point. If you are on the HTML lesson, place it before \`<main>\`.`;
   }
 
   if (q.includes("about")) {
@@ -152,12 +153,18 @@ function buildReply(question, lesson, challenge, code, language) {
   return `I am here for ${lessonTitle}. Try asking how to build the navbar, the about section, the projects area, or the contact form.`;
 }
 
-export default function BitsyChat({ lesson, challenge, code, language }) {
-  const [messages, setMessages] = useState([
-    {
-      role: "bitsy",
-      text: "Tap me and ask how to build the navbar, about section, projects, or contact form.",
-    },
+interface BitsyChatProps {
+  lesson: Lesson | null;
+  challenge: Task | null;
+  code: string;
+  language: string;
+}
+
+export default function BitsyChat({ lesson, challenge, code, language }: BitsyChatProps) {
+  const [messages, setMessages] = useState<
+    Array<{ role: "user" | "bitsy"; text: string }>
+  >([
+    { role: "bitsy", text: "Tap me and ask how to build the navbar, about section, projects, or contact form." },
   ]);
   const [prompt, setPrompt] = useState("");
   const [isThinking, setIsThinking] = useState(false);
@@ -172,7 +179,7 @@ export default function BitsyChat({ lesson, challenge, code, language }) {
     []
   );
 
-  const sendPrompt = (value) => {
+  const sendPrompt = (value: string) => {
     const question = value.trim();
     if (!question || isThinking) return;
 

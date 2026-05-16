@@ -133,7 +133,7 @@ function CodeSnippet({ snippet }) {
 }
 
 export default function LessonPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
 
@@ -153,6 +153,8 @@ export default function LessonPage() {
   const [earnedCoins, setEarnedCoins] = useState(0);
   const [activeTab, setActiveTab] = useState("instructions");
   const [checking, setChecking] = useState(false);
+  const [codeToRun, setCodeToRun] = useState("");
+  const [runKey, setRunKey] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -212,6 +214,7 @@ export default function LessonPage() {
 
   const challenge = lesson?.challenges?.[currentIdx];
   const lang = lesson?.language ?? "html";
+  const isJs = lang === "javascript";
 
   const handleCheck = useCallback(async () => {
     if (!challenge || !lesson || checking) return;

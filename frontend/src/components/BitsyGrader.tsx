@@ -1,6 +1,12 @@
 import { Loader2, CheckCircle, AlertTriangle } from "lucide-react";
+import type { GraderFeedback } from "../types";
 
-export default function BitsyGrader({ feedback, isChecking }) {
+interface BitsyGraderProps {
+  feedback: GraderFeedback | null;
+  isChecking: boolean;
+}
+
+export default function BitsyGrader({ feedback, isChecking }: BitsyGraderProps) {
   if (!feedback && !isChecking) return null;
 
   const isValid = feedback?.valid;
