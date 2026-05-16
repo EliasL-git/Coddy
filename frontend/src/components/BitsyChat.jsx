@@ -3,6 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { MessageCircle, Send, X } from "lucide-react";
 import bitsyDefault from "../assets/Bitsy_default.png";
+import "./BitsyChat.css";
 
 function normalize(text) {
   return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -13,17 +14,117 @@ function renderMarkdown(text) {
 }
 
 function pickExample(lesson, titleMatch) {
-  return lesson?.examples?.find((example) => example.title?.toLowerCase().includes(titleMatch));
+  return lesson?.examples?.find((example) =>
+    example.title?.toLowerCase().includes(titleMatch)
+  );
 }
 
-function buildReply(question, lesson, challenge) {
+/* ───── Code analysis helpers ───── */
+function getUnclosedTags(html) {
+  const open = html.match(/<([a-z][a-z0-9]*)\b[^>]*>/gi) || [];
+  const close = html.match(/<\/([a-z][a-z0-9]*)>/gi) || [];
+  const needClosing = ["div", "span", "p", "section", "article", "header", "footer", "nav", "main", "ul", "ol", "li", "form", "table", "tr", "td", "th", "body", "html"];
+  const counts = {};
+  open.forEach((tag) => {
+    const name = tag.match(/<([a-z][a-z0-9]*)\b/i)?.[1].toLowerCase();
+    if (name && needClosing.includes(name)) counts[name] = (counts[name] || 0) + 1;
+  });
+  close.forEach((tag) => {
+    const name = tag.match(/<\/([a-z][a-z0-9]*)>/i)?.[1].toLowerCase();
+    if (name && needClosing.includes(name)) counts[name] = (counts[name] || 0) - 1;
+  });
+  return Object.entries(counts).filter(([, diff]) => diff !== 0).map(([tag]) => tag);
+}
+
+function missingSemicolons(js) {
+  const lines = js.split("\n");
+  const offenders = [];
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (
+      trimmed.length > 0 &&
+      !trimmed.endsWith("{") &&
+      !trimmed.endsWith("}") &&
+      !trimmed.endsWith(";") &&
+      !trimmed.endsWith(",") &&
+      !trimmed.startsWith("//") &&
+      !/^(if|else|for|while|switch|try|catch|function\s+\w+\s*\()/i.test(trimmed)
+    ) {
+      offenders.push(idx + 1);
+    }
+  });
+  return offenders;
+}
+
+function invalidCssSelectors(css) {
+  const bad = [];
+  const lines = css.split("\n");
+  lines.forEach((line, idx) => {
+    const raw = line.trim();
+    if (raw.startsWith(".")) {
+      const sel = raw.split("{")[0].trim();
+      if (/\.\d/.test(sel)) bad.push({ line: idx + 1, sel });
+    }
+    if (raw.includes(" #") && !raw.includes("[id")) {
+      const sel = raw.split("{")[0].trim();
+      if (/#\s/.test(sel)) bad.push({ line: idx + 1, sel });
+    }
+  });
+  return bad;
+}
+
+function analyzeCode(code, language) {
+  if (!code || code.trim().length < 3) return null;
+
+  const lang = normalize(language);
+  let issues = [];
+  const snippet = code.length > 400 ? code.slice(0, 400) + "\n..." : code;
+
+  if (lang === "html" || code.trim().startsWith("<")) {
+    const unclosed = getUnclosedTags(code);
+    if (unclosed.length) issues.push(`Unclosed tags detected: **${unclosed.join(", ")}**. Make sure every opening tag has a matching closing tag.`);
+    if (!code.includes("<!DOCTYPE") && !code.includes("<html")) issues.push("It looks like your HTML might be missing a proper `<!DOCTYPE html>` or `<html>` root element.");
+  }
+
+  if (lang === "css" || code.includes("{")) {
+    const badSelectors = invalidCssSelectors(code);
+    if (badSelectors.length) issues.push(`Potential invalid selector(s) on line(s) ${badSelectors.map((b) => b.line).join(", ")}: \`${badSelectors.map((b) => b.sel).join("`, `")}\`. Avoid spaces between a dot/hash and the name.`);
+    if (code.split("}").length < code.split("{").length) issues.push("Looks like there may be more opening `{` than closing `}` braces.");
+  }
+
+  if (lang === "javascript" || code.includes("function") || code.includes("const ") || code.includes("let ")) {
+    const noSemi = missingSemicolons(code);
+    if (noSemi.length) issues.push(`Lines ${noSemi.slice(0, 5).join(", ")}${noSemi.length > 5 ? "..." : ""} might be missing semicolons. While JS has ASI, explicit semicolons prevent surprises.`);
+    if (code.includes("var ")) issues.push("Consider replacing `var` with `let` or `const` for clearer scoping.");
+    const unmatchedParens = (code.match(/\(/g) || []).length - (code.match(/\)/g) || []).length;
+    if (unmatchedParens !== 0) issues.push(`Parentheses mismatch detected (${unmatchedParens > 0 ? "extra opening" : "extra closing"}). Double-check your function calls and expressions.`);
+  }
+
+  if (!issues.length) return null;
+
+  return {
+    summary: issues.join("\n\n"),
+    snippet,
+  };
+}
+
+/* ───── Reply builder (with code awareness) ───── */
+function buildReply(question, lesson, challenge, code, language) {
   const q = normalize(question);
   const lessonTitle = lesson?.title || "this lesson";
-  const lessonLanguage = lesson?.language || "html";
+  const lessonLanguage = lesson?.language || language || "html";
   const challengeTitle = challenge?.title || "your current task";
+  const analysis = analyzeCode(code, lessonLanguage);
 
   if (!q) {
     return "Ask me about the lesson, your code, or the next thing to build.";
+  }
+
+  if (q.includes("code") || q.includes("my code") || q.includes("fix") || q.includes("issue") || q.includes("error")) {
+    if (analysis) {
+      return `Here is what I noticed in your current code:\n\n${analysis.summary}\n\n\`\`\`${lessonLanguage}\n${analysis.snippet}\n\`\`\`\n\nTake a look at those spots and try the fix. If it still feels off, paste the specific line and I will dig deeper.`;
+    }
+    return `Your code looks clean so far—nice work!\n\n\`\`\`${lessonLanguage}\n${code?.slice(0, 300) || "// Your code here"}\n\`\`\`\n\nIf something is not behaving as expected, tell me which part and I will help you debug it.`;
   }
 
   if (q.includes("navbar") || q.includes("nav")) {
@@ -36,15 +137,15 @@ For ${lessonTitle}, that is the cleanest starting point. If you are on the HTML 
   }
 
   if (q.includes("about")) {
-    return `Create a \`<section id=\"about\">\` with a heading and a short paragraph that introduces you.\n\n\`\`\`html\n<section id=\"about\">\n  <h2>About Me</h2>\n  <p>Write a short intro here.</p>\n</section>\n\`\`\`\n\nThat fits the structure expected in ${challengeTitle}.`;
+    return `Create a \`<section id="about">\` with a heading and a short paragraph that introduces you.\n\n\`\`\`html\n<section id="about">\n  <h2>About Me</h2>\n  <p>Write a short intro here.</p>\n</section>\n\`\`\`\n\nThat fits the structure expected in ${challengeTitle}.`;
   }
 
   if (q.includes("project") || q.includes("card")) {
-    return `Use a \`<section id=\"projects\">\` and group each project in an \`<article>\`.\n\n\`\`\`html\n<section id=\"projects\">\n  <h2>Projects</h2>\n  <article>\n    <h3>Project Title</h3>\n    <p>Short description.</p>\n  </article>\n</section>\n\`\`\``;
+    return `Use a \`<section id="projects">\` and group each project in an \`<article>\`.\n\n\`\`\`html\n<section id="projects">\n  <h2>Projects</h2>\n  <article>\n    <h3>Project Title</h3>\n    <p>Short description.</p>\n  </article>\n</section>\n\`\`\``;
   }
 
   if (q.includes("contact") || q.includes("form")) {
-    return `Build a \`<form>\` with a name field and a message field, then use a submit button.\n\n\`\`\`html\n<section id=\"contact\">\n  <h2>Contact</h2>\n  <form>\n    <input type=\"text\" placeholder=\"Your name\" required>\n    <textarea placeholder=\"Your message\" required></textarea>\n    <button type=\"submit\">Send</button>\n  </form>\n</section>\n\`\`\``;
+    return `Build a \`<form>\` with a name field and a message field, then use a submit button.\n\n\`\`\`html\n<section id="contact">\n  <h2>Contact</h2>\n  <form>\n    <input type="text" placeholder="Your name" required>\n    <textarea placeholder="Your message" required></textarea>\n    <button type="submit">Send</button>\n  </form>\n</section>\n\`\`\``;
   }
 
   if (lessonLanguage === "css") {
@@ -58,7 +159,7 @@ For ${lessonTitle}, that is the cleanest starting point. If you are on the HTML 
   return `I am here for ${lessonTitle}. Try asking how to build the navbar, the about section, the projects area, or the contact form.`;
 }
 
-export default function BitsyChat({ lesson, challenge }) {
+export default function BitsyChat({ lesson, challenge, code, language }) {
   const [messages, setMessages] = useState([
     {
       role: "bitsy",
@@ -75,7 +176,7 @@ export default function BitsyChat({ lesson, challenge }) {
       "How should I build the about section?",
       "How do I make the projects cards?",
     ],
-    [],
+    []
   );
 
   const sendPrompt = (value) => {
@@ -90,95 +191,97 @@ export default function BitsyChat({ lesson, challenge }) {
     window.setTimeout(() => {
       setMessages((current) => [
         ...current,
-        { role: "bitsy", text: buildReply(question, lesson, challenge) },
+        {
+          role: "bitsy",
+          text: buildReply(question, lesson, challenge, code, language),
+        },
       ]);
       setIsThinking(false);
     }, 250);
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
+    <div className="bitsy-chat-root">
       {!isOpen ? (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-3 rounded-full border border-purple-200 bg-white/95 px-3 py-2 shadow-xl shadow-purple-200/50 backdrop-blur transition-transform hover:-translate-y-0.5 hover:shadow-2xl"
+          className="bitsy-trigger"
           aria-label="Open Bitsy chat"
         >
-          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-purple-200 bg-gradient-to-b from-purple-50 to-blue-50">
-            <img src={bitsyDefault} alt="Bitsy" className="h-10 w-10 object-contain transition-transform group-hover:scale-105" />
+          <span className="bitsy-trigger-avatar">
+            <img src={bitsyDefault} alt="Bitsy" />
           </span>
-          <span className="hidden max-w-40 text-left sm:block">
-            <span className="block text-sm font-bold text-purple-800">Bitsy</span>
-            <span className="block text-xs text-slate-500">Ask me how to build this page</span>
+          <span className="bitsy-trigger-text">
+            <span className="bitsy-name">Bitsy</span>
+            <span className="bitsy-hint">Ask me how to build this page</span>
           </span>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-700 text-white">
+          <span className="bitsy-trigger-icon">
             <MessageCircle size={15} />
           </span>
         </button>
       ) : (
-        <div className="flex w-[min(92vw,24rem)] flex-col overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl shadow-purple-300/30">
-          <div className="flex items-center gap-3 border-b border-purple-100 bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 text-white">
-            <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10">
-              <img src={bitsyDefault} alt="Bitsy avatar" className="h-9 w-9 object-contain" />
+        <div className="bitsy-chat-card">
+          <div className="bitsy-chat-header">
+            <div className="bitsy-header-avatar">
+              <img src={bitsyDefault} alt="Bitsy avatar" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold leading-none">Bitsy</p>
-              <p className="mt-1 text-xs text-white/80">Your coding buddy is here to talk through the lesson.</p>
+            <div className="bitsy-header-info">
+              <p className="bitsy-header-name">Bitsy</p>
+              <p className="bitsy-header-subtitle">
+                Your coding buddy is here to talk through the lesson.
+              </p>
             </div>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+              className="bitsy-close-btn"
               aria-label="Close Bitsy chat"
             >
               <X size={16} />
             </button>
           </div>
 
-          <div className="max-h-[28rem] space-y-3 overflow-y-auto bg-gradient-to-b from-purple-50/60 to-blue-50/50 px-3 py-3">
+          <div className="bitsy-messages">
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
-                className={`flex items-end gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`bitsy-message-row ${message.role}`}
               >
                 {message.role === "bitsy" && (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-purple-200 bg-white shadow-sm">
-                    <img src={bitsyDefault} alt="Bitsy" className="h-7 w-7 object-contain" />
+                  <div className="bitsy-message-avatar">
+                    <img src={bitsyDefault} alt="Bitsy" />
                   </div>
                 )}
 
-                <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
-                    message.role === "user"
-                      ? "rounded-br-md bg-slate-900 text-white"
-                      : "rounded-bl-md border border-purple-100 bg-white text-slate-800"
-                  }`}
-                >
+                <div className={`bitsy-message-bubble ${message.role}`}>
                   {message.role === "user" ? (
-                    <p>{message.text}</p>
+                    <p className="bitsy-message-text">{message.text}</p>
                   ) : (
-                    <div className="prose prose-sm max-w-none prose-p:my-0 prose-strong:text-purple-800 prose-code:text-purple-700" dangerouslySetInnerHTML={{ __html: renderMarkdown(message.text) }} />
+                    <div
+                      className="bitsy-message-markdown"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMarkdown(message.text),
+                      }}
+                    />
                   )}
                 </div>
               </div>
             ))}
 
             {isThinking && (
-              <div className="flex items-end gap-2 justify-start">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-purple-200 bg-white shadow-sm">
-                  <img src={bitsyDefault} alt="Bitsy" className="h-7 w-7 object-contain" />
+              <div className="bitsy-message-row bitsy">
+                <div className="bitsy-message-avatar">
+                  <img src={bitsyDefault} alt="Bitsy" />
                 </div>
-                <div className="rounded-2xl rounded-bl-md border border-purple-100 bg-white px-3 py-2 text-sm text-slate-500 shadow-sm">
-                  Bitsy is thinking...
-                </div>
+                <div className="bitsy-thinking">Bitsy is thinking...</div>
               </div>
             )}
           </div>
 
-          <div className="border-t border-purple-100 bg-white px-3 py-3">
+          <div className="bitsy-footer">
             <form
-              className="flex items-center gap-2"
+              className="bitsy-form"
               onSubmit={(event) => {
                 event.preventDefault();
                 sendPrompt(prompt);
@@ -188,25 +291,25 @@ export default function BitsyChat({ lesson, challenge }) {
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
                 placeholder="Ask Bitsy something..."
-                className="flex-1 rounded-xl border border-purple-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-purple-400"
+                className="bitsy-input"
               />
               <button
                 type="submit"
                 disabled={!prompt.trim() || isThinking}
-                className="inline-flex items-center gap-1 rounded-xl bg-purple-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="bitsy-send-btn"
               >
                 <Send size={14} />
                 Ask
               </button>
             </form>
 
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="bitsy-quick-pills">
               {quickPrompts.map((item) => (
                 <button
                   key={item}
                   type="button"
                   onClick={() => sendPrompt(item)}
-                  className="rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-800 transition-colors hover:bg-purple-100"
+                  className="bitsy-pill"
                 >
                   {item}
                 </button>

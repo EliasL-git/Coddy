@@ -621,7 +621,7 @@ export default function LessonPage() {
           </div>
 
           <div className="shrink-0 border-t border-gray-700 px-4 py-2 space-y-3">
-            <BitsyChat lesson={lesson} challenge={challenge} />
+            <BitsyChat lesson={lesson} challenge={challenge} code={code} language={lang} />
 
             {(feedback || checking) && <BitsyGrader feedback={feedback} isChecking={checking} />}
           </div>
